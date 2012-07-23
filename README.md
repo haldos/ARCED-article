@@ -1,4 +1,4 @@
 ARCED-article
 =============
 
-A Review of Classic Edge Detectors - Article - Latex files.
+A Review of Classic Edge Detectors - IPOL Article - Latex files.
