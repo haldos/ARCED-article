@@ -29,6 +29,9 @@ $^2$ IIE, UdelaR, Uruguay (\texttt{juanc@fing.edu.uy})}
 \numberwithin{equation}{section}
 \numberwithin{table}{section}
 %\numberwithin{figure}{section}
+\usepackage{marginnote}
+\newcounter{mynote}% a new counter for use in margin notes
+\usepackage{jfc}
 \begin{document}
 
 \lstset{
@@ -114,12 +117,10 @@ to compare their performance. Conclusions are detailed in section \ref{sec:concl
 
 %-------------------------------------------------------------------------------
 
-\section{Algorithms based on first derivative}
+\section{Algorithms based on the first derivative}
 \label{sec:first}
 
-Algorithms based on first derivative studied in this paper have a common scheme, with 
-the only difference in the type of filtering. Figure \ref{fig:blockdiagram1} presents
-a block diagram of these algorithms. \\
+All the algorithms based on first derivatives that are studied in this paper share a common structure, the only difference being the type of filtering used to compute those derivatives. Figure \ref{fig:blockdiagram1} presents a block diagram of those algorithms. \myn{\label{correction_a:first_derivative:first_deriv_rephrase}\\
 
 \begin{figure}[!h]
 	\centering
@@ -164,13 +165,12 @@ the methods of Roberts, Prewitt and Sobel will be studied, whose main difference
 
 \subsection{The \textit{Roberts} operators}
 
-The most usual approach to approximate the first derivative is to take the Taylor expansion of first order with
-a small $h$. Thus $f'(x)$ is computed as
+The most usual approach to approximate the first derivative is to take the Taylor expansion of first order with a small $h$. Thus $f'(x)$ is computed as
 \begin{equation}
 	f'(x) \simeq \frac{f(x+h) - f(x)}{h}.\\
 \end{equation}
-The image is composed by discrete points of coordinates $(i,j)$, so taking $x=i*h$ and $y=j*h$, the 
-first derivative of the image is approximated, based on the intensity values ​​at points of the image, as:
+\myn{\label{correction_a:first_derivative:discretization}} Digital images are commonly seen as a discretization of a continuos image, where a pixel is evenly sample on a grid. If we denote the grid sizes by $\Delta x$ and $\Delta y$, the continuous coordinates $x$  and $y$ can be written as $x=i\Delta x$ and $y=i\Delta y$. When no information about the spatial sampling is available, the size of the grid it is commonly assumed to be $\Delta x=\Delta y=1$.\\
+Thus, in the discrete space the first derivative of the image is computed as:
 \begin{equation}
 \label{eq:roberts1}
 	g_x = \frac{\partial f(x,y)}{\partial x} = f(i+1,j) - f(i,j)
@@ -181,11 +181,9 @@ and
 	g_y = \frac{\partial f(x,y)}{\partial y} = f(i,j+1) - f(i,j).\\
 \end{equation}
 
-Equations \ref{eq:roberts1} and \ref{eq:roberts2} can be implemented for all values of $x$ and $y$
-by filtering the image $f(x,y)$ with the 1-D masks in Figure \ref{fig:1dmasks}. But when finding 
-diagonal edges is desired, 2-D masks are needed. The \textit{Roberts operators} are one of the earliest 
-attempts to use 2-D masks for this purpose. These operators are based on computing the diagonal 
-diferences implemented by filtering an image with the masks in Figure \ref{fig:roberts}. By convention 
+\myn{\label{correction_a:first_derivative:diagonal edges}} Equations \ref{eq:roberts1} and \ref{eq:roberts2} can be implemented for all values of $x$ and $y$ by filtering the image $f(x,y)$ with the 1-D masks shown in Figure \ref{fig:1dmasks}. However, in order to be able to compute diagonal edges, 2-D masks are needed. \\
+The \textit{Roberts operators} are one of the earliest 
+attempts to use 2-D masks for this purpose. These operators are based on computing the diagonal \tcom{differences} \myn implemented by filtering an image with the masks in Figure \ref{fig:roberts}. By convention 
 in these figures, x-coordinates grow from left to right and y-coordinates grow top-down. It is also 
 usual to normalize the masks, in order to have gain equal to $1$. \\
 
@@ -213,31 +211,26 @@ of them being the 3x3. These masks provide more information to find the directio
 into account information on opposite sides of the central point. \\
 
 The simplest digital approximation to the partial derivatives using masks of size $3\times3$ are obtained 
-by taking the difference between the third and first rows (or columns) of the $3\times3$ region. The
-difference between the third and first rows approximates the derivative in the x-direction, and 
-the difference between the third and first columns approximates the derivative in the y-direction.
-These approximations can be implemented by filtering the image with the two masks in Figure \ref{fig:prewitt}.
-These masks are called \textit{Prewitt operators}. \\
+by taking the difference between the third and first rows (or columns) of the $3\times3$ region. The difference between the third and first rows approximates the derivative in the x-direction, and the difference between the third and first columns approximates the derivative in the y-direction.
+These approximations can be implemented by filtering the image with the two masks shown in Figure \ref{fig:prewitt}. Those are called \textit{Prewitt operators}. \\
 
 \begin{SCfigure}[2][!h]
 	\centering
 	\includegraphics[width=0.25\textwidth]{prewitt_n.pdf}
-	\caption{Normalized \textit{Prewitt} 2-D masks of size $3\times3$.}
+	\caption{Normalized \textit{Prewitt} 2-D masks of size $3\times3$. }
 	\label{fig:prewitt}
 \end{SCfigure}
 
-These masks can be obtained (beyond normalization) as the convolution of a horizontal derivation mask 
-$[-1\ 0\ 1]$ with a vertically moving average $[1\ 1\ 1]$, and vice versa. Hence, these operators have 
-smoothing properties in the direction opposite to the gradient.
+\myn{\label{correction_a:first_derivative:sobel} The left mask can be constructed (beyond normalization) as the convolution of a vertical derivative filter
+$[-1\ 0\ 1]$ with an horizontally moving average filter $[1\ 1\ 1]$. The same reasoning could be applied to the right mask. Hence, these operators can be interpreted as the consecutive application of an horizontal low pass filter with a vertical derivative filter. Thus, they show a smoothing behaviour in the direction orthogonal to the gradient.
 
 %-------------------------------------------------------------------------------
 
 \subsection{The \textit{Sobel} operators}
 
-A slight variation of the Prewitt operators uses more weight on the central coefficients of the 
+\textit{Sobel operators} are a slight variation of the Prewitt operators which use more weight on the central coefficients of the 
 difference. It can be shown that using a $2$ in the center location provides better image smoothing. This
-variation is implemented using masks in Figure \ref{fig:sobel}. These operators are called 
-\textit{Sobel operators}. \\
+variation is implemented using masks in Figure \ref{fig:sobel}. 
 
 \begin{SCfigure}[2][!h]
 	\centering

@@ -1,3 +1,10 @@
 # Compiled source #
 ###################
 *.pdf
+*.aux
+*.synctex.*
+*.bbl
+*.log
+*.out
+*.blg
+*.swp

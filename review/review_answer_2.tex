@@ -1,0 +1,239 @@
+\documentclass[a4paper,10pt]{report}
+
+\usepackage[english]{babel}
+%\usepackage[none]{hyphenat}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[pdftex]{hyperref}
+%\usepackage[tight,scriptsize]{subfigure}
+%\usepackage{ucs}
+%\usepackage[utf8x]{inputenc}
+\usepackage{jfc}
+\hypersetup{hypertexnames, plainpages=false,colorlinks=true}
+\usepackage{amsmath}
+
+% Title Page
+\title{}
+\author{}
+
+\usepackage{xr}
+\externaldocument{../edge-detection-review-2nd-revision-v1}
+\reversemarginpar
+
+\newcounter{myquestion}
+\newcommand{\ml}{\mathcal{L}}
+\newcommand{\ms}{\mathcal{S}}
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\chapter{Introduction}
+In this communication we answer to the second review of the article "A Contrario Selection of Optimal Partitions for Image Segmentation", submitted to the SIAM Journal on Imaging Sciences.
+In the first place, we would like to thank again the reviewers for the detailed and thoughtful review provided. In the following we address the issues raised by the reviewers. 
+For each of them, an answer is provided and a cross-reference with a red tag Cn (where n is the number of the correction) to the corresponding (corrected) part of the paper is provided. In addition, changes made to the paper are highlighted in red (when significative) in the new version of the paper. 
+These red marks will be removed for the final version.
+
+The remarks from the reviewers are marked with the tag \textcolor{blue}{QUESTION} and our answers with the tag \ans.
+
+%\section{Brief summary of changes}
+\section{General changes}
+\begin{itemize}
+ \item Changed the misstyped acronym IOS for OIS in some tables.
+\item We added an appendix where we analize the complexity of the algorithm.
+\item Removed several typos and orthographic errors.
+\item Added a missing hypothesis for Theorem \ref{theo:meaningful_partitions:optimality}.
+\end{itemize}
+
+
+\chapter{Answers to reviewer \#1}
+
+\section{Summary}
+
+\que This paper reviews classic edge detectors based on the rst and second derivatives of the image. It focuses
+on three first-derivative based algorithms (namely Sobel, Prewitt and Roberts) and two second-derivative
+based algorithms (Marr-Hildreth and Haralick). The paper itself explains all the implementation details.
+The code provides the corresponding implementation.\\
+
+\section{Paper review}
+
+\que In general the paper provides all the information necessary. Some parts need nevertheless rewriting either because of minor mistakes (that make some sentences really hard to read) or because of mathematical inaccuracies.\\
+
+\ans We thank the reviewer for the comments and for contributing to improve the quality of the paper. We did a major proof-reading of the paper and we did our best effort to improve the writing\\
+
+\que You mention a video but it was not included in the supplementary les (35-757-1-SP.zip and 35-758-1-SP.zip) so that I could not see it.\\
+
+\ans XXX
+
+\que p2: There is no need to define x = ih and y = ih, you should take x = i; y = j, and then add a small h, which will be equal to 1 since you are on a grid. In theory the approximation is valid for h small, thus it is really questionable to define x = ih? \\
+
+\ans This is a confusion, we should present the taylor approximation of the derivative using h, and then define the grid sizes as $\Delta x$ and $\Delta y$, and thus define $x=i\Delta x$. This is done in Correcction \ref{correction_a:first_derivative:discretization}. Next paragraph was also rewritten, see \refc{correction_a:first_derivative:diagonal edges}\\
+
+\que p4: The computational diference between Prewitt and Sobel masks is not important" -> You need to justify this sentence. Show and refer to an experiment of some kind. Otherwise this is an unfounded claim. \\
+
+\ans We think we did not explain ourselves correctly. We meant that the computational cost of both filters is the same, thus we are free to pick the more accurate one. To claim that is better to filter with a gaussian filter than a moving average seems to be a reasonable claim.\\
+
+\section{minor remarks}
+
+\que In general I would recommend proofreading the whole paper, there are a lot of grammar
+mistakes that make the paper hard to follow, I noted some of them below but this list is not exhaustive at all.\\
+
+\ans We thank the reviewer for the comment, most of the paper has been revised thoroughly. Specially the points remarked in this section.\\
+
+\que Algorithms based on first derivative \\
+\ans The title of the section and the first paragraph of it was rewritten to improve grammar. See Correcction \ref{correction_a:first_derivative:first_deriv_rephrase}\\
+
+\que Taylor expansion of fi	rst order with a small h
+
+\que p3 diferences
+
+\ans Done in Correction \ref{correction_b::remember_eqs}. Thanks for the suggestion.\\
+
+\ans The abstract data structure used is a priority queue implemented with a binary heap, where the cost of modification of an items is $\Theta(\log n)$.
+This is now made more explicit in the corresponding section. See correction \ref{correction_b:greedy:complexity}.\\
+
+\que Section V.D, on the complexity of the MP algorithm. The one-pass 
+from the root to the leaves has a linear complexity w.r.t. the number 
+of nodes. But, for each node, the possible combination of i + j = k 
+need to be analyzed. Consequently, this should impact also the 
+complexity. Have I missed something? \\
+
+\ans This is correct, the analysis of the complexity of the combinations of i,j such that i+j=k was missing and we discovered that it was more complex than we though. Please see the newly added Appendix \ref{sec:appendix:complexity} where a detailed analysis is included (Correction C\ref{correction_b:appendix:complexity}). We also added some conclusions regarding that issue \ref{correction_b:conclusions:complexity}.\\
+
+
+\que In Section VI, I suppose that the results for other benchmark 
+approaches are obtained from the paper of arbelaaez.2011.pami. But it 
+seems that in the paper of Arbelaez, the method of "Multiscale 
+algorithm for image segmentation" by Koepfler et al. (denoted as MS in 
+the current paper) is not included. What's the source of this result? \\
+
+\ans No they are not from arbelaaez.2011.pami. In fact, those results are taken from Arbelaez's papers published in 2006 and 2009.
+In particular, the results of Koepfler and also from Watersheds are presented in the 2006 paper (see \cite{im_proc:segmentation:arbelaez:2006:boundary_extraction}).
+They are not shown in a table, but in a figure. The references were already there, in the header of Table X, but we also repeated them in the caption, for the sake of clarity.
+In addition, we added the numbers of the tables and figures from where we extracted the info.\\
+
+\que In Table XIII, what's the method NS? i guess it is the Mean Shift 
+method. Because the result of NS is exactly the same as the one given 
+by Mean Shift presented in the aforementioned Arbelaez's paper. And in 
+Table XIV, the result given by the method of MS is exactly the same as 
+the one of Mean Shift in Arbelaez's paper. So i am wondering if here 
+MS actually stands for Mean Shift rather than the method of Koepfler 
+as stated in the current paper. Besides, the same result between the 
+method of MS and CM (stands for Mean Shift in this paper) in Table X 
+confirms that suspicion. On the other hand, I would guess that MS 
+stands for MultiScale (Mumford-Shah) this is indeed Koepfler's 
+paper. Please clarify. \\
+
+\ans In the first place we must apologize, we mixed up the notations, mainly due to the long period between both versions. NS and MS in this Table and in the following, meant Mean Shift as the reviewer correctly points out.
+In every place that MS appeared we actually meant Mean Shift, the only exception was Table X. We corrected everything, so now MS really means Mumford-Shah (Koepfler) and CM means Mean Shift.
+However we must remark that MS and CM actually give the same result (0.63) just by coincidence, that is not a mistake. We re-checked that with the references.\\
+
+\que Numbering of the Tables XI, XII, XIII, XIV. I believe it is better 
+to change the position of table XII and XIV to clearly classify the 
+boundary benchmark and region benchmark. Or change the position of 
+table XIII and XIV to obtain the same order (boundary then region) as 
+it is the case for table XI and XII. \\
+
+\que Done. Thanks for the suggestion.\\
+
+\que Fig. 11 and 12. It is better to inverse the saliency maps (ie, the 
+darker a contour is, the more important it is). On a screen, this is 
+fine, but on a white sheet of paper (or on a white pdf), the inversion 
+provides a better visualisation. 
+
+\ans Done. Thanks for the suggestion.\\
+
+\que Page 22, first column, the authors suggest using the gPb contour 
+detector as the initial segmentation. This would seem a good 
+idea. However, I can share some experience here, and I have to say 
+that hierarchies built from gPb by Arbelaez contain few levels. It is 
+thus very difficult to "enhance" them by some manipulation, as 
+proposed in this paper and in other papers. In a way, the gPb 
+detector, being a learned gradient, may be too good for such a line of 
+work. Besides, it is slow. \\
+
+\ans We thank the reviewer for this suggestion. For this paper we prefer to maintain the proposed approach but we will take note for our future work.\\
+
+\section{Typos:} 
+
+
+\que Page 2, last line of second column: "of this ideas" -> of these ideas\\
+
+\ans Corrected. Thank you.\\
+
+\que Page 3, second line of first column: "contribution of this work" -> contributions of this work \\
+
+\ans Corrected. Thank you.\\
+
+\que Page 10, just before theorem 1: "in the following conjecture". I 
+guess it is not anymore a conjecture, unless your proof does not 
+stand. \\
+
+\ans Changed conjecture for theorem. Thanks.\\
+
+\section{ In the bibliography }
+\que Ref 3 can be replaced by the more complete \verb+\cite{5427030}+
+\begin{verbatim}
+@article {5427030, 
+title = {Region Merging Techniques Using Information Theory Statistical Measures}, 
+journal = {Image Processing, IEEE Transactions on}, 
+volume = {19}, 
+number = {6}, 
+year = {2010}, 
+month = {june}, 
+pages = {1567 -1586}, 
+keywords = {Algorithms, Automated, Computer Simulation, Computer-Assisted, Data Interpretation, error consistency indicators, image color homogeneity, image colour analysis, Image Enhancement, Image Interpretation, image region analysis, image segmentation, image texture, image texture homogeneity, Information Theory, information theory statistical measures, Models, nonparametric region models, object-oriented segmentation, partition significance index, Pattern Recognition, Reproducibility of Results, scale-based merging order, Sensitivity and Specificity, Statistical, statistical analysis, Subtraction Technique, texture image segmentation, unsupervised region merging techniques}, 
+issn = {1057-7149}, 
+doi = {10.1109/TIP.2010.2043008}, 
+author = {Calderero, F. and Marques, F.} 
+\end{verbatim}
+
+\ans Done. Thanks for the updated information.\\
+
+\que ref. 6 and 38 can efficiently be merged into a single reference, without loosing precision. \\
+
+\ans Thank you, we didn't notice they were the same reference. Corrected.\\
+
+\chapter{Answers to reviewer \#2}
+
+\que The authors made a great work at improving the paper and addressing the issues raised during the review. \\
+\ans Thanks very much, such an improvement wouldn't be possible without the thorough work of the referees.\\
+
+\que However, I would still suggest some clarification in section V.E, regarding the boundary term discussion in the multi-partition case. In the paper, it seems that the main reason for not including it is to avoid the introduction of a new weighting parameter (which by the way was not needed in the greedy case?). But in the answer to question 31, it seems that it is mostly a computational issue related to the scale-climbing algorithm. \\
+
+\ans We added a comment regarding this on Correction \ref{correction_b:boundary_term:descreasing}.\\
+
+\que Anyway, I don't think this justifies to delay the publication of the paper with an additional review, so I already recommend the paper for publication.\\
+
+\ans Thank you very much.\\
+
+
+%
+
+% \begin{table}[ht]
+% \centering
+% \begin{tabular}{|c|c|}
+%  \hline
+%  	order (k) & LNFA (best $\mathcal{P}$)\\
+%  \hline
+%  	1 &    \\
+%  	. &     \\
+%  	. &   \\
+%  	. &   \\
+%  	$n_1$ &   \\
+%  \hline
+%  \end{tabular}
+% \caption{Best partitions selected by the multipartition (MP) algorithm for the \emph{Church} image.}\label{review:table:implementation:complexity}
+% %\vskip \espaciotabla
+% \end{table}
+
+
+
+\bibliographystyle{unsrt}
+\bibliography{../../tools/journal_list_short,../../tools/references,../../tools/hierarchical_segmentation}
+\end{document}
+
+
+ 
