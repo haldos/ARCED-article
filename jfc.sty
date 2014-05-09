@@ -45,6 +45,11 @@
         \marginnote{\mbox{\ta{C\themynote}}\ta{#1}}% the note
 }
 
+\newcommand{\mynf}[1]{% a simple margin note
+        \refstepcounter{mynote}% step counter
+        \mbox{\textsuperscript{\ta{C\themynote}} #1}% the number (superscript) in text
+}
+
 \newcommand{\myn}{% a simple margin note
         \refstepcounter{mynote}% step counter
         \mbox{\textsuperscript{\ta{C\themynote}}}% the number (superscript) in text

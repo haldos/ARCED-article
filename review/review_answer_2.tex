@@ -41,10 +41,11 @@ The remarks from the reviewers are marked with the tag \textcolor{blue}{QUESTION
 %\section{Brief summary of changes}
 \section{General changes}
 \begin{itemize}
- \item Changed the misstyped acronym IOS for OIS in some tables.
-\item We added an appendix where we analize the complexity of the algorithm.
+ \item Revised general writing of the article.
+\item We added appendices to include secondary information that distracts from the main purpose of the article.
+\item In that sense we moved the numeric values of the $\mathbf{mask_i}$ matrices to the first appendix
+\item We also moved the Implementation section, which documents the code, to the second appendix.
 \item Removed several typos and orthographic errors.
-\item Added a missing hypothesis for Theorem \ref{theo:meaningful_partitions:optimality}.
 \end{itemize}
 
 
@@ -52,7 +53,7 @@ The remarks from the reviewers are marked with the tag \textcolor{blue}{QUESTION
 
 \section{Summary}
 
-\que This paper reviews classic edge detectors based on the rst and second derivatives of the image. It focuses
+\que This paper reviews classic edge detectors based on the first and second derivatives of the image. It focuses
 on three first-derivative based algorithms (namely Sobel, Prewitt and Roberts) and two second-derivative
 based algorithms (Marr-Hildreth and Haralick). The paper itself explains all the implementation details.
 The code provides the corresponding implementation.\\
@@ -61,7 +62,7 @@ The code provides the corresponding implementation.\\
 
 \que In general the paper provides all the information necessary. Some parts need nevertheless rewriting either because of minor mistakes (that make some sentences really hard to read) or because of mathematical inaccuracies.\\
 
-\ans We thank the reviewer for the comments and for contributing to improve the quality of the paper. We did a major proof-reading of the paper and we did our best effort to improve the writing\\
+\ans We thank the reviewer for the comments and for contributing to improve the quality of the paper. We did a major proof-reading of the paper and we did our best effort to improve the writing.\\
 
 \que You mention a video but it was not included in the supplementary les (35-757-1-SP.zip and 35-758-1-SP.zip) so that I could not see it.\\
 
@@ -73,7 +74,24 @@ The code provides the corresponding implementation.\\
 
 \que p4: The computational diference between Prewitt and Sobel masks is not important" -> You need to justify this sentence. Show and refer to an experiment of some kind. Otherwise this is an unfounded claim. \\
 
-\ans We think we did not explain ourselves correctly. We meant that the computational cost of both filters is the same, thus we are free to pick the more accurate one. To claim that is better to filter with a gaussian filter than a moving average seems to be a reasonable claim.\\
+\ans We think we did not explain ourselves correctly. We meant that the computational cost of both filters is the same, thus we are free to pick the more accurate one. To claim that is better to filter with a gaussian filter than a moving average is a well established practice in the signal processing community.\\
+
+\que Algorithm 2: lines 2 and 3 need to be moved inside the else statement (between lines 7 and 8) otherwise you are computing something that is not always used.\\
+
+\ans Fixed  in \refc{correction_a:second_derivative:marr_algo}.\\
+
+\que p10: the $b_i$ you are defining are referred as $mask_i$ in algorithm 3. It is actually better to name them
+$mask_i$ to avoid confusion with $b_{i,j}$ . It is also inaccurate to state where $bi =...$ since you have not
+used the $b_i$ yet but the $b_{i,j}$ . It makes the whole thing very hard to read.\\
+
+\ans While we agree on making the notation coherent, we prefer to keep the name $b_i$. Naming a matrix $B$, its rows as $\mathbf{b_i}$ and its elements $b_{i,j}$ it is a quite common (and unambiguous) way to use the notation. However we also added $\mathbf{mask_i}$ and defined it as being $\mathbf{b_i}$ reordered. Thus, we kept algorithm 3 using $mask_i$ (see \refc{correction_a:second_derivative:haralick_algo}), we defined $\mathbf{mask_i}$ and we used $\mathbf{b_i}$ before saying where. Finally, we stated explicitely that $\mathbf{b_i}$ is a vector containing the $i_{th} $ row of matrix $B$ (See \refc{correction_a:second_derivative:haralick_bi}).
+
+\que Can you add an experiment showing the influence of the padding method on the results?\\
+
+\que Use a "Name +year" bibliography as asked in the IPOL writing guidelines.\\
+4 points to ipol, In addition to that it is not referred to in the text.\\
+
+\ans This was corrected in two ways. As new IPOL guidelines suggest, the SIAM bibliography style was applied. Reference [4] now points to the correct article.\\
 
 \section{minor remarks}
 
@@ -82,153 +100,348 @@ mistakes that make the paper hard to follow, I noted some of them below but this
 
 \ans We thank the reviewer for the comment, most of the paper has been revised thoroughly. Specially the points remarked in this section.\\
 
-\que Algorithms based on first derivative \\
-\ans The title of the section and the first paragraph of it was rewritten to improve grammar. See Correcction \ref{correction_a:first_derivative:first_deriv_rephrase}\\
+\que Algorithms based onfirst derivative \\
+\ans The title of the section and the first paragraph of it was rewritten to improve grammar. See  \refc{correction_a:first_derivative:first_deriv_rephrase}\\
 
-\que Taylor expansion of fi	rst order with a small h
+\que Taylor expansion of first order with a small h\\
 
-\que p3 diferences
+\ans Rephrased in \refc{correction_a:first_derivative:taylor}\\
 
-\ans Done in Correction \ref{correction_b::remember_eqs}. Thanks for the suggestion.\\
+\que p3 diferences\\
 
-\ans The abstract data structure used is a priority queue implemented with a binary heap, where the cost of modification of an items is $\Theta(\log n)$.
-This is now made more explicit in the corresponding section. See correction \ref{correction_b:greedy:complexity}.\\
+\ans Fixed in \refc{correction_a:typo}. \\
 
-\que Section V.D, on the complexity of the MP algorithm. The one-pass 
-from the root to the leaves has a linear complexity w.r.t. the number 
-of nodes. But, for each node, the possible combination of i + j = k 
-need to be analyzed. Consequently, this should impact also the 
-complexity. Have I missed something? \\
+\que "normalization" do you mean "up to the normalization"\\
 
-\ans This is correct, the analysis of the complexity of the combinations of i,j such that i+j=k was missing and we discovered that it was more complex than we though. Please see the newly added Appendix \ref{sec:appendix:complexity} where a detailed analysis is included (Correction C\ref{correction_b:appendix:complexity}). We also added some conclusions regarding that issue \ref{correction_b:conclusions:complexity}.\\
+\ans Corrected in \ref{correction_a:first_derivative:sobel} and \ref{correction_a:first_derivative:sobel}.\\
 
+\que "thus It"\\
 
-\que In Section VI, I suppose that the results for other benchmark 
-approaches are obtained from the paper of arbelaaez.2011.pami. But it 
-seems that in the paper of Arbelaez, the method of "Multiscale 
-algorithm for image segmentation" by Koepfler et al. (denoted as MS in 
-the current paper) is not included. What's the source of this result? \\
+\ans Fixed\\
 
-\ans No they are not from arbelaaez.2011.pami. In fact, those results are taken from Arbelaez's papers published in 2006 and 2009.
-In particular, the results of Koepfler and also from Watersheds are presented in the 2006 paper (see \cite{im_proc:segmentation:arbelaez:2006:boundary_extraction}).
-They are not shown in a table, but in a figure. The references were already there, in the header of Table X, but we also repeated them in the caption, for the sake of clarity.
-In addition, we added the numbers of the tables and figures from where we extracted the info.\\
+\que "As mentioned before this leads to ab overdetermied"
 
-\que In Table XIII, what's the method NS? i guess it is the Mean Shift 
-method. Because the result of NS is exactly the same as the one given 
-by Mean Shift presented in the aforementioned Arbelaez's paper. And in 
-Table XIV, the result given by the method of MS is exactly the same as 
-the one of Mean Shift in Arbelaez's paper. So i am wondering if here 
-MS actually stands for Mean Shift rather than the method of Koepfler 
-as stated in the current paper. Besides, the same result between the 
-method of MS and CM (stands for Mean Shift in this paper) in Table X 
-confirms that suspicion. On the other hand, I would guess that MS 
-stands for MultiScale (Mumford-Shah) this is indeed Koepfler's 
-paper. Please clarify. \\
+\ans Fixed\\ 
 
-\ans In the first place we must apologize, we mixed up the notations, mainly due to the long period between both versions. NS and MS in this Table and in the following, meant Mean Shift as the reviewer correctly points out.
-In every place that MS appeared we actually meant Mean Shift, the only exception was Table X. We corrected everything, so now MS really means Mumford-Shah (Koepfler) and CM means Mean Shift.
-However we must remark that MS and CM actually give the same result (0.63) just by coincidence, that is not a mistake. We re-checked that with the references.\\
+\que "Gaussian kernel is generated by sampling the"\\
+\que "unlike the case of Gaussian kernel"\\
+\que "are not independent of each one"\\
+\que "implies complete the borders with many zero valued pixels as needed"\\
+\que "It can be seen in gure 16 an area of interest of the image."\\
+\que "appearing unwanted isolated edges"\\
+\que "because they only consists"\\
+\que "more fair"\\
 
-\que Numbering of the Tables XI, XII, XIII, XIV. I believe it is better 
-to change the position of table XII and XIV to clearly classify the 
-boundary benchmark and region benchmark. Or change the position of 
-table XIII and XIV to obtain the same order (boundary then region) as 
-it is the case for table XI and XII. \\
+\que "runs significative faster"\\
 
-\que Done. Thanks for the suggestion.\\
+\ans Fixed\\
 
-\que Fig. 11 and 12. It is better to inverse the saliency maps (ie, the 
-darker a contour is, the more important it is). On a screen, this is 
-fine, but on a white sheet of paper (or on a white pdf), the inversion 
-provides a better visualisation. 
-
-\ans Done. Thanks for the suggestion.\\
-
-\que Page 22, first column, the authors suggest using the gPb contour 
-detector as the initial segmentation. This would seem a good 
-idea. However, I can share some experience here, and I have to say 
-that hierarchies built from gPb by Arbelaez contain few levels. It is 
-thus very difficult to "enhance" them by some manipulation, as 
-proposed in this paper and in other papers. In a way, the gPb 
-detector, being a learned gradient, may be too good for such a line of 
-work. Besides, it is slow. \\
-
-\ans We thank the reviewer for this suggestion. For this paper we prefer to maintain the proposed approach but we will take note for our future work.\\
-
-\section{Typos:} 
-
-
-\que Page 2, last line of second column: "of this ideas" -> of these ideas\\
-
-\ans Corrected. Thank you.\\
-
-\que Page 3, second line of first column: "contribution of this work" -> contributions of this work \\
-
-\ans Corrected. Thank you.\\
-
-\que Page 10, just before theorem 1: "in the following conjecture". I 
-guess it is not anymore a conjecture, unless your proof does not 
-stand. \\
-
-\ans Changed conjecture for theorem. Thanks.\\
-
-\section{ In the bibliography }
-\que Ref 3 can be replaced by the more complete \verb+\cite{5427030}+
-\begin{verbatim}
-@article {5427030, 
-title = {Region Merging Techniques Using Information Theory Statistical Measures}, 
-journal = {Image Processing, IEEE Transactions on}, 
-volume = {19}, 
-number = {6}, 
-year = {2010}, 
-month = {june}, 
-pages = {1567 -1586}, 
-keywords = {Algorithms, Automated, Computer Simulation, Computer-Assisted, Data Interpretation, error consistency indicators, image color homogeneity, image colour analysis, Image Enhancement, Image Interpretation, image region analysis, image segmentation, image texture, image texture homogeneity, Information Theory, information theory statistical measures, Models, nonparametric region models, object-oriented segmentation, partition significance index, Pattern Recognition, Reproducibility of Results, scale-based merging order, Sensitivity and Specificity, Statistical, statistical analysis, Subtraction Technique, texture image segmentation, unsupervised region merging techniques}, 
-issn = {1057-7149}, 
-doi = {10.1109/TIP.2010.2043008}, 
-author = {Calderero, F. and Marques, F.} 
-\end{verbatim}
-
-\ans Done. Thanks for the updated information.\\
-
-\que ref. 6 and 38 can efficiently be merged into a single reference, without loosing precision. \\
-
-\ans Thank you, we didn't notice they were the same reference. Corrected.\\
+\que "polinomial"\\
+\ans Fixed\\
 
 \chapter{Answers to reviewer \#2}
 
-\que The authors made a great work at improving the paper and addressing the issues raised during the review. \\
-\ans Thanks very much, such an improvement wouldn't be possible without the thorough work of the referees.\\
+\section{General comments}
+Overall I found the article clear (only the Haralick algorithm explanations are
+confusing). The code is very clear, well documented (although not following the Doxygen conventions) and matches almost perfectly
+the description in the pdf. Finally the submitted demo works as expected with no
+more parameters than the ones presented in the paper. All this makes the
+submission a very good one for Ipol.
 
-\que However, I would still suggest some clarification in section V.E, regarding the boundary term discussion in the multi-partition case. In the paper, it seems that the main reason for not including it is to avoid the introduction of a new weighting parameter (which by the way was not needed in the greedy case?). But in the answer to question 31, it seems that it is mostly a computational issue related to the scale-climbing algorithm. \\
+However, I think that the wording is largely below standard. I have reported
+some of the typos, but beyond that, several sentences are wrongly formulated and
+even entire paragraphs should be restructured. I have proposed some improvements, yet
+I think that the authors should take upon themselves to globally improve the
+quality of the paper in this regard.
 
-\ans We added a comment regarding this on Correction \ref{correction_b:boundary_term:descreasing}.\\
+\section{Comments on the PDF}
+\subsection{General description of the article}
+This article describes classical algorithms for edge detection. First the
+category of first order derivative is described. The only degree of freedom
+considered in this article for this class of algorithms lies in the operator
+used to approximate the derivative. The article includes some details on the
+Robert operators, the Prewitt operators and the Sobel operators. Otherwise the
+algorithms are kept strictly identical and are composed of:
 
-\que Anyway, I don't think this justifies to delay the publication of the paper with an additional review, so I already recommend the paper for publication.\\
+- a filtering to compute the image gradient
+- a thresholding on the magnitude of the gradient to select edges
 
-\ans Thank you very much.\\
+Each step is described within the text with sufficient details and a consistent
+pseudo-code for the entire algorithms is provided at the end of the
+corresponding section.
+
+In a subsequent section, two algorithms based on second order derivatives are
+described: the Marr-Hildreth algorithm as well as the alternative proposed by
+Haralick. Both algorithms are "conceptually" composed of two steps:
+
+- compute the second order derivatives
+- find the zero crossing locations and set them as edges
+
+Once again the two algorithms differs mainly in the way of computing
+derivatives. The former rely on the filtering with laplacian of gaussian or on
+the filtering with a gaussian followed by a laplacian operator. The latter
+relies on a local bicubic approximation followed by a second derivative
+analytical computation. Sufficient details are again provided along with
+algorithmic description. However some of the details could be made clearer (see
+later comments).
+
+The fourth section provides technical details on some filtering aspects and the
+last section is dedicated to the experimental discussion.
 
 
-%
+\subsection{Detailed comments, typos and typesetting}
+\subsubsection{Demo}
+The url \url{http://dev.ipol.im/~haldos/ipol_demo/xxx_edges/} provided in the preprint
+contains a broken demo. This is not very important though since the demo code
+provided in the submission works correctly and it should eventually replace the
+one specified in the pdf.
 
-% \begin{table}[ht]
-% \centering
-% \begin{tabular}{|c|c|}
-%  \hline
-%  	order (k) & LNFA (best $\mathcal{P}$)\\
-%  \hline
-%  	1 &    \\
-%  	. &     \\
-%  	. &   \\
-%  	. &   \\
-%  	$n_1$ &   \\
-%  \hline
-%  \end{tabular}
-% \caption{Best partitions selected by the multipartition (MP) algorithm for the \emph{Church} image.}\label{review:table:implementation:complexity}
-% %\vskip \espaciotabla
-% \end{table}
 
+\subsubsection{ Section 2.3: The Sobel operators}
+No upper case on the "i" of "thus It".
+
+
+\subsubsection{Section 2.4: Computation of the edges}
+The threshold variable "th" should be in italic.
+Missing a "." at the end of the section.
+
+
+\subsubsection{Algorithm 2:}
+\begin{verbatim}
+tzc" --> "th_{ZC}"
+\end{verbatim}
+
+\subsubsection{ Section 3.2.1: Bi-cubic polynomial fitting}
+
+\que I would put more emphasis on the fact that the approximation is expressed in a
+local frame, so that the pixel coordinates $x_1,y_1\dots,x_{25},y_{25}$ are
+always the same. This is implicitly hinted by the following sentence:
+"e.g. in a neighborhood of size 5 × 5, x and y take values between −2 and 2".
+But I would insist on this fact again at the end, otherwise it is not clear why
+the matrix $B$ can be precomputed once for all.\\
+
+\ans This was taken into account and the entire section was rewritten. Now it is said at the begginning and at the end of the section, see Corrections \ref{second_derivative:haralick:statement} and \ref{second_derivative:haralick:mask_computation}.\\
+
+Also, the explanations are badly organized:
+\que  The least-square problem is not "approximately" solved but "EXACTLY" solved with the pseudo-inverse.\\
+
+\ans Agreed. Corrected now.\\
+
+
+\que $- (A^TA)^{−1}A^T f=k \Rightarrow k=Bf$ should be rephrased as
+$k=Bf$ with $B=(A^TA)^{−1}A^T$\\
+
+\ans We didn't follow exactly the suggestion, but changed the text in the same spirit. See \refc{second_derivative:haralick:normal}.
+
+\que Equation 3.4 and the one just before it should be removed since they are
+simple reformulation of the matrix equation above. At best you can keep the
+notations for the entries of B that is $b_{i,j}$ for $i\in {1,\ldots,10}$ and
+$j \in {1,ldots,25}$.\\
+
+\ans While we agree that there is some superfluous and simple equations, we found that those tricks to speed up are quite hard to follow at first. Thus, this level of detail could help the reader to clearly understand whats going on.\\
+
+\que the introduction of $\bf{b_i}$ comes too soon, they corresponds to the masks of table 3.1\\
+
+\ans We rearranged the explanations in this section. In particular now $\bf{b_i}$ is well defined, and we introduced a new variable $\mathbf{mask_i}$ which corresponds to the matrix for of $\bf{b_i}$ and postponed the introduction of these masks to a point closer to table 3.1. However that table was somehow superfluous and thus we moved it to an appendix, to avoid adding more noise to the text.\\
+
+\que  I would rephrase all the explanations that follows the definition of $\bf{b_i}$
+focusing on the purpose of speed up; I would first explain that for each
+$i\in {1,\ldots,10}$ one can store all the $k_i$'s in an image, and that this
+image can be obtained by a convolution with a mask of the form $\bf{bi}=...$
+And then I would add that each mask $\bf{b_i}$ can be precomputed once for all and are provided in table 3.1.\\
+
+\ans We followed this suggestion, which in our opinion is a great improvement for the presentation. See \refc{second_derivative:haralick:mask_computation} Thanks to the reviewer for this one. 
+
+\que Can you explain how you have obtained the entries of the mask? If you used a program for that, I think you should provide it.\\
+
+\ans XXX\\
+
+\subsubsection{Section 3.2.2: Analytical calculation of the second derivative}
+
+\que This description is unclear to me. Does the described procedures allows to
+compute the laplacian operator (under the bicubic approximation)? If yes,
+explain why this is the case. By reading the original paper by Haralick, I
+could determine that the answer is negative, and that the goal is to compute a second derivative in the direction of the gradient. The only sentence referring to this purpose is at the very end of the section:
+"Given the direction defined by θ, with ρ > 0, an edge will always be an
+ascending step. This indicates that the first derivative in this direction has
+a maximum and that the second derivative has a zero crossing with negative
+slope. That is, the third derivative less than zero."
+If so I would recommend to put more emphasis on this goal and the justification that I quoted from your text. And you should definitely place the
+corresponding sentences at the very beginning (before giving the mathematical details).\\
+
+\ans Changed as suggested. See \refc{second_derivative:haralick:analitical:statement}.\\
+
+\que Using the expression "polar form" is completely misleading since theta is
+fixed. Haralick simply considers the second derivative in the direction of the
+gradient and there comes the restriction $f_\theta(\rho)$ of the polynomial
+approximant to the line of angle theta.\\
+
+\ans Changed, see \refc{second_derivative:haralick:analitical:derivative}. We now explicitely defined the line of angle theta, and described the points lying on that line in terms of $\rho$ and $\theta$\\
+
+\que Equation 3.9 is not mathematically correct. You should add before it, $\exists
+\rho\in[0,\rho_0]$ s.t. Equation 9.\\
+
+\que I would integrate the footnote 7 within the text, just after: "This parameter
+must be greater than zero and less
+than 1." since it provides the rationale behind these constraints.\\
+
+\ans Done, see \refc{second_derivative:haralick:analitical:parameter_value}.\\
+
+You should explain what you mean by the optimal value of $\rho_0$. If you are
+simply referring to Haralick's claims, you should state it explicitly.
+
+Also, are you sure you implement the exact conditions specified in the
+original article by Haralick. The ones I could find are as follows:
+"If for some $\rho, |\rho|\leq\rho_0, [...], f"_\alpha(\rho)<0$ [eq.1],
+$f''_alpha(\rho)=0 [eq.2] and f'(\rho)\neq 0$ [eq.3] we have discovered [...]"
+I guess that [eq.1] was meant to involve a third derivative instead of a second
+derivative. Then it is exacly your condition $c_3<0$. I don't find anything
+close to [eq.3] in your description. Besides, although (as you justified it)
+[eq.2] implies your condition $|\frac{C_2}{3C_3}|\leq\rho_0$ they are not
+equivalent. I would say that you should add that $C_2$ must be positive as well. If you want to stick with your conditions only, you should at least add a discussion pointing on the fact that they differ from the one formulated by Haralick, and
+describe the differences. I actually tried changing your code to take the
+sign of $C_2$ into account and to introduce [eq.3]: it does not seem to change
+the output. Yet I would recommend that you investigate why and provide that
+information.
+
+\subsubsection{ Section 4: Common Mathematical Operations}
+"All algorithms implemented" --> "All implemented algorithms"
+
+\subsubsection{ Figure 11:}
+"Is clearly required" --> "It ..."
+
+The text in the figure is practically unreadable.
+
+
+\subsubsection{ Section 5: Results}
+The experimental discussion is quite succinct, I would expect Ipol articles to
+be more in-depth. For instance, it seems important that the impact of the
+algorithms parameters be studied more deeply with dedicated examples and that
+you give some hindsight on the way you choose their values (why did you pick
+$th_zc=0.1$ for one experiment and then 0.13 in the other one). I would
+also expect the claims of the original
+articles to be challenged, confirmed or denied. As an example, Haralick claimed
+that his algorithm performed way better than the one by Marr and Hildreth.
+
+\que You use too many short paragraphs!! This is true in general for your text, but
+it is especially pronounced here. I would recommend one paragraph for the synthetic example and one or two for the windmill example.\\
+
+\ans XXX\\
+
+\que Also, I don't see the point of duplicating the execution time data, once in the figures and another time in a dedicated table.\\
+
+\ans Since we don't have any space restrictions, summarizing all execution times in a table, will help the reader compare them.
+
+I am not entirely convinced by your explanation of the thicker edges in
+Haralick case. There are two reasons form my doubts:
+- My first point is that even with a smooth model, the fact that the detection
+is based on zero-crossing of second derivative should make the detection well localized. Indeed when dealing with a smooth edge, on the contrary to the
+first derivative methods, zero-crossing is supposed to fire only at the
+location of maximum gradient.
+- Then, taking the opposite view to your argument, imagine that you would fit a more regular polynomial, let's say of degree 4. Then instead of getting a
+smoother approximant, I imagine that you would witness some kind of Runge's
+phenomenon which would translate in ringing patterns that would make the edge detection less predictable. It may be that the reason of the thicker edges is precisely the ringing that would create many local edges. But I must say that
+this is only a lead and I am not sure of this explanation either. You could
+challenge this argument on the synthetic example by plotting the profiles of
+the function $f_theta(rho)$ at few edge locations.
+
+
+\subsubsection{ Section 6: Conclusion}
+Your conclusion is quite poor. It simply recaps what was just stated in the
+experimental section. You could try to improve it by placing the
+algorithms under study in a broader context. The only part of your conclusion
+that follows that path is the reference to Canny's approach. Much more
+works have been made on edge detection since then, for instance approaches
+based on machine learning that have several advantages to be discussed. This one option among others.
+
+Again, too many short paragraphs.
+
+\que "runs significative faster that" --> "runs significaNTLY faster thaN"\\
+
+\ans corrected\\
+
+\section{ Comments on the Code and demo}
+
+\subsubsection{General description of the code}
+The reviewed code consists of two files: edges.c contains the main function,
+while the actual algorithms are included in \verb+classic_edge_detectors.c+; This
+latter contains several routines:
+- 6 routines are dedicated to each algorithms or their different flavors.
+Accordingly one can find the following routines:
+\begin{verbatim}
++ edges_roberts
++ edges_prewitt
++ edges_sobel
++ edges_mh for the Marr-Hildreth algorithms with gaussian and laplacian
++ edges_mh_log for the same algorithm with the laplacian of gaussian
++ edges_haralick
+- another routine called conv2d implements image filtering with a squared kernel
+- eventually two other are responsible for generating a gaussian kernel or laplacian of
+gaussian
+\end{verbatim}
+
+
+The implementations of all the detectors match faithfully their description in
+the pdf. This is obviously a very good point. I checked as carefully as I could
+all the kernel entries. This was quite some fun concerning Haralick's mask!
+Although in this case I only checked that the entries were identical in the pdf
+and the code (I did not check the mathematical validity of those entries).
+
+Consistently to my expectation, the three routines corresponding to first order
+derivative (robert, prewitt and sobel) are strictly identical (except for
+names of variables and the kernel entries). One could argue that this property,
+that is quite clear in the paper, should have been reflected in the code. Yet I
+would understand that the authors prefer to keep the three routines independent
+from one another.
+
+Similarly, the two routines implementing the two flavors of the Marr-Hildreth
+detector are entirely identical a part from the filtering phase. Again both
+implementation could be merged into a single routine.
+
+\subsection{ Algorithm's parameters}
+From the article I could retrieve the following list of parameters:
+\begin{verbatim}
+- First order methods : th
+- Marr-Hildreth: sigma, n, $th_{ZC}$
+- Haralick: $ro_0$
+- All algorithms: padding methods
+\end{verbatim}
+They corresponds exactly to the ones present in the code and (except for the
+padding method) also those exposed in the demo. This is quite satisfying!
+
+\subsection{ Minor comments}
+\subsubsection{ In gaussian\_kernel}
+The normalization by the sum is different from the one evoked in Section
+4.1.1. You should either change the implementation or comment on this in the article. Note
+also that the comment in the code correspond to the formula in the pdf instead of the implemented one.
+
+
+\subsubsection{ In LoG\_kernel }
+The same problem of consistency for the normalization occurs here. It is in
+fact worse than in the gaussian case, since I suppose that the LOG kernel does not sum to one. Besides dividing by $sigma^4$ is pointless if you normalize by the sum! Of course, kernel normalization has no impact on the edge detection since the thresholds are expressed in a relative way.
+
+\subsubsection{ In the README:}
+\que you announce that:
+"More than one algorithm can be applied to the same image with the same
+command. For example:
+edges -r 0.1 -l 3 29 0.13 molino.png
+will apply Roberts' algorithm with threshold parameter 0.1, and the
+Marr-Hildreth (LoG) with parameters sigma=3.00, N=29, TZC=0.13;"
+You should also warn that each algorithm can be launched only once. For instance
+the following call will fail:
+edges -r 0.1 -r 0.2 -l 3 29 0.13 molino.png
+
+\section{ Conclusion}
+Overall I think the submission is a good candidate for IPOL but it cannot be
+accepted in the current state. My main complain relates to the poor quality of
+the PDF:
+\begin{verbatim}
+- many explanations are unstructured
+- the writing is often bad (I am under the impression that the pdf was submitted without
+proofreading)
+- Except for the algorithmic description that is sufficiently detailed, many
+aspects are lacking: specifically in the experimental part and the conclusion.
+\end{verbatim}
 
 
 \bibliographystyle{unsrt}
