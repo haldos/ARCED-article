@@ -531,7 +531,7 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 \caption{Marr-Hildreth edge detection algorithm.}
 \label{algo:mh}
 \begin{algorithmic}[1]
-\REQUIRE input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $tzc$.
+\REQUIRE input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
 \STATE $im \leftarrow$ input image
 \IF{Gaussian kernel}
 	\STATE Define Laplacian operator $laplacian$
@@ -706,9 +706,17 @@ As we expressed the approximation in a local coordinate system, the coefficients
 \subsubsection{Analytical calculation of the second derivative}
 \label{sec:secderivative}
 
-\myn{\label{second_derivative:haralick:analitical:statement}} After the neighborhood of each point of the image is approximated using the bi-cubic polynomial expression in equation \ref{eq:bicubic}, the idea of Haralick's algorithm is to compute the second derivative of the image in the direction of the gradient using that approximation.\\
+\myn{\label{second_derivative:haralick:analitical:condition}} The main idea of Haralick's algorithm, as stated in the original work, is to find "negative sloped zero crossings of the second derivative". Thus, and pixel will lie on an edge if the following three conditions hold\footnote{Please note that there is a typo in Haralick's original paper. The statement of the idea is presented at the beggining of Section III, in the first column of page 42. The three conditions are presented at the end of the same section, in the second column. There it reads $f''_{\alpha}(\rho)<0$, $f''_{\alpha}(\rho)=0$ and $f''_{\alpha}(\rho)<0$. Clearly, the first and second conditions can't be true at the same time, thus the first one should be $f'''_{\alpha}(\rho)<0$.}:
 
-Let $\theta$ be the gradient angle, defined with respect to the negative x-axis. We \tcom{approximate} it using the first order terms of the polynomial \ref{eq:bicubic} obtaining the following expression:
+\begin{enumerate}
+\item the first derivative is non zero.
+\item the second derivative is zero.
+\item the third derivative is negative.
+\end{enumerate}
+
+\myn{\label{second_derivative:haralick:analitical:statement}} After the neighborhood of each point of the image is approximated using the bi-cubic polynomial expression in equation \ref{eq:bicubic}, the idea is to compute the derivatives of the image in the direction of the gradient using that approximation.\\
+
+Let $\theta$ be the gradient angle, defined with respect clockwise from the y-axis\footnote{Although it seems a non standard choice, we followed exactly from the original work}. We \tcom{approximate} it using the first order terms of the polynomial \ref{eq:bicubic} obtaining the following expression:
 
 \begin{align}
 \label{eq:sincos}
@@ -716,7 +724,7 @@ Let $\theta$ be the gradient angle, defined with respect to the negative x-axis.
 	\cos(\theta) & = -\frac{k_3}{\sqrt{k_2^2 + k_3^2}}. \\
 \end{align}
 
-\myn{\label{second_derivative:haralick:analitical:derivative}} Let us consider the (half) line $r$ passing by $(x,y)$ with angle $\theta$. The coordinates of each point $(u,v)$ on this line can be described in terms of  the angle $\theta$ and the distance $\rho$ to $(x,y)$ as follows
+\myn{\label{second_derivative:haralick:analitical:derivative}} Let us consider the line $r$ passing by $(x,y)$ with angle $\theta$. The coordinates of each point $(u,v)$ on this line can be described in terms of  the angle $\theta$ and the distance $\rho$ to $(x,y)$ as follows
 
 \begin{equation*}
 	x = \rho\cos{\theta} \: \text{and} \: y = \rho\sin{\theta} \\
@@ -746,34 +754,50 @@ The derivatives are obtained as follows.
 	f'''_{\theta}(\rho) = 6C_3 .\nonumber \\
 \end{align}
 
-Then, the condition that the second derivative is equal to zero becomes
-
-\begin{equation}\label{eq:haralick:cond_b_orig}
-	f''_{\theta}(\rho) = 2C_2 + 6C_3\rho = 0
-\end{equation}
-
- Ideally, to hold this condition, the polynomial function 
-should be zero at $\rho=0$, but this condition is relaxed, allowing the polynomial becomes zero in a neighborhood 
-of $\rho=0$ ($\rho\leq\rho_0$). \\
-With this relaxation, the condition \ref{eq:haralick:cond_b_orig} becomes
-
-\begin{equation}
-\left| \frac{C_2}{3C_3} \right| < \rho_0,
-\end{equation}
-
-where $\rho_0$ is a fixed threshold, which passed as an argument to the algorithm.
-\myn{\label{second_derivative:haralick:analitical:parameter_value}}  This parameter must be greater than zero and and less than $\sqrt{2}$. Its optimal  value is between $0.4$ and $0.6$.\\
-
-The other condition required is that the third derivative to be negative, i.e.\
+\myn{}The simplest way to impose these conditions is starting with the third one, i.e. that the third derivative has to be negative. Thus,\
 
 \begin{equation}
 	f'''_{\theta}(\rho) = 6C_3 < 0 \ \ \Rightarrow \ \ C_3 < 0.
 \end{equation}
 
-Given the direction defined by $\theta$, with $\rho>0$, one edge will always be an ascending step. This 
-indicates that the first derivative in this direction has a maximum and that second derivative has a zero 
-crossing with negative slope. That is, the third derivative less than zero.
+By construction $\theta$ is the direction of the gradient, which means that the edge will always be an ascending step. Thus by definition the function $f_{\theta}(\rho)$ is non-decreasing on $\rho=0$. $f'_{\theta}(0) \geq 0$. This implies that $C_1 \geq 0$.
 
+The second condition that the second derivative is equal to zero becomes
+
+\begin{equation}\label{eq:haralick:cond_b_orig}
+	f''_{\theta}(\rho) = 2C_2 + 6C_3\rho = 0
+\end{equation}
+
+Ideally, if the edge point falls exactly on a grid location, the polynomial function 
+should be zero at $\rho=0$. But due to the finite nature of the image grid, the edge could be located at non integer locations. Thus, the condition is relaxed asking that the polynomial becomes zero in a neighborhood of radius $\rho_0>0$ centered at $\rho=0$. 
+With this relaxation, the condition \ref{eq:haralick:cond_b_orig} becomes
+
+\begin{equation}
+\exists\rho \in [0,\rho_0) \:\:  \mathtt{such\:that}  \:\:  2C_2 + 6C_3\rho = 0 \\
+\end{equation}
+
+Thus, the solution is $\rhoˆ*=-\frac{C_2}{3C_3} $ and imposing $|\rhoˆ*|<\rho_0$ we obtain the second condition
+
+\begin{equation}
+\left| \frac{C_2}{3C_3} \right| < \rho_0,
+\end{equation}
+
+Finally,  the first condition is that the first derivative is non zero, 
+
+\begin{equation}\label{eq:cond:first}
+f'_{\theta}(\rho) = C_1 + 2C_2\rho + 3C_3\rho^2 \neq 0 \\
+\end{equation}
+
+If we evaluate the solution $\rhoˆ*$ on it, we obtain
+
+\begin{equation}\label{eq:cond:first}
+f'_{\theta}(\rho) = C_1 - \frac{C_2^2}{C_3}  \\
+\end{equation}
+
+as $C_1>=0$ and $C_3<0$, $f'_{\theta}(\rho)$ will always be positive, thus the first condition always hold by construction and does not need to be verified.\\
+
+In Haralick's work $\rho_0$ is a fixed threshold which acts as an argument to the algorithm.
+\myn{\label{second_derivative:haralick:analitical:parameter_value}}  This parameter must be greater than zero and and less than the size of the grid (i.e. $\rho_0<1$). In this work we obtained the best results with values between $0.4$ and $0.6$.\\
 
 %-------------------------------------------------------------------------------
 
@@ -856,7 +880,7 @@ size $n$ by $n$.
 
 \subsubsection{Gaussian kernel}
 
-Gaussian kernel is generated by sampling the 2-D Gaussian function (centered at $(0,0)$)
+The Gaussian convolution mask is generated by sampling the 2-D Gaussian function (centered at $(0,0)$)
 %\footnote{Note that for simplicity the normalizing coefficient $1/\sqrt{2\pi\sigma^2}$ is omitted.}
 \begin{equation}
 	\label{eq:gaussian_function}
@@ -885,7 +909,7 @@ large enough to have a good approximation of the Gaussian function in the kernel
 
 The Laplacian of Gaussian $\nabla^2G(x,y)$ can be obtained analyically first and then a discrete mask 
 can be computed by sampling the analytical kernel. Using this kernel for edge detection involves only 
-one convolution with the input image (unlike the case of Gaussian kernel, in which two convolutions 
+one convolution with the input image (unlike the Gaussian kernel case, in which two convolutions 
 have to be performed, one with the kernel and another with the Laplacian operator), but the kernel 
 support must be greater in order to obtain the same precision.
 
@@ -933,12 +957,10 @@ Gaussian kernel.}
 \label{kernelcomparison}
 
 As mentioned before, the size $n$ of the kernel and the standard deviation $\sigma$ of the exponential function 
-are not independent of each one. This is because the function LoG has wider support than the
-Gaussian function (i.e. LoG function has a slower decay), so a greater value of $n$ is needed to 
-generate a correctly sampled LoG kernel than in the case of the Gaussian kernel, with the same $\sigma$.\\
+are not independent. For the same $\sigma$ value , the function LoG has wider support than the
+Gaussian function (i.e. LoG function has a slower decay), so a greater value of $n$ is needed to correcly sample the LoG kernel.\\
 
-Figure \ref{fig:kernels} shows both functions generated with the same value of $\sigma$. Is clearly 
-required a larger kernel size in the case of the LoG function (approximately 18\% more). For 
+Figure \ref{fig:kernels} shows both functions generated with the same value of $\sigma$. It is clear that we must use a larger kernel size in the LoG function case (approximately 18\% larger). For 
 example, using $\sigma=4$, the optimum value for $n$ in the case of the Gaussian function is the 
 first odd integer greater than $6\sigma$, which is $25$, and for the case of LoG function, would 
 be $29$.
@@ -948,7 +970,7 @@ be $29$.
 
 \begin{SCfigure}[][!t]
 	\centering
-	\includegraphics[width=0.5\textwidth]{kernels.pdf}
+	\includegraphics[width=0.8\textwidth]{kernels.pdf}
 	\caption{Comparison of the Gaussian and LoG functions.}
 	\label{fig:kernels}
 \end{SCfigure}
@@ -957,12 +979,8 @@ be $29$.
 
 \subsection{Convolution}
 
-When making a convolution, it is necessary to define the boundary conditions used to calculate such convolution 
-around the edges of the image, and to get a valid output the same size as input image. In this paper, 
-two methods were implemented: zero-padding and boundary reflection. Zero-padding implies complete 
-the borders of the image with many zero valued pixels as needed (depending on the size of the convolution 
-kernel). Reflection involves completing those pixels with the corresponding symmetric pixel value 
-relative to the edge of the image. Direct convolution is not the only way of filtering an image with a kernel. There are other methods such as FFT convolution or recursive filtering.%\footnote{Implementations of these methods can be found in the \href{https://tools.ipol.im/wiki/author/code/hatchery/}{IPOL Code Hatchery}.}.
+When making a convolution, it is necessary to define the boundary conditions used to compute it near the edges of the image, and to get a valid output the same size as input image. In this paper, 
+two methods were implemented: zero-padding and boundary reflection. Zero-padding completes the borders of the image with valued pixels. Reflection completes those pixels with the corresponding symmetric pixel value  relative to the edge of the image. Direct convolution is not the only way of filtering an image with a kernel. There are other methods such as FFT convolution or recursive filtering.%\footnote{Implementations of these methods can be found in the \href{https://tools.ipol.im/wiki/author/code/hatchery/}{IPOL Code Hatchery}.}.
 
 %-------------------------------------------------------------------------------
 
@@ -1045,7 +1063,7 @@ First the results of the first derivative edge detection algorithms are shown Fi
 	\label{exectime2}
 \end{table}
 
-In this example the difference in performance between the first derivative edge detection algorithms and the second derivative ones is more significative. It can be seen in Figure \ref{fig:result3} an area of ​​interest of the image, enlarged to have a better view of the detail. Note that none of the first derivative methods (even with a loose threshold) detect the lower edge of the blade (which is shaded). Neither the Haralick algorithm is able to detect it. However, the Marr-Hildreth algorithm detects it, using either a Gaussian or a LoG kernel. 
+In this example the difference in performance between the first derivative edge detection algorithms and the second derivative ones is more significative.  For each image in Figure \ref{fig:result3}, we show an area of ​​interest, enlarging it to have a better view of the details. Note that none of the first derivative methods (even with a loose threshold) detect the lower edge of the blade (which is shaded). Neither the Haralick algorithm is able to detect it. However, the Marr-Hildreth algorithm detects it, using either a Gaussian or a LoG kernel. 
 
 Another observation is that edges detected by Haralick's algorithm appear to be thicker than those detected with other ones. This may be due the regularity that Haralick assumes. 
 
@@ -1100,7 +1118,7 @@ Further examples obtained with the implemented algorithms are shown in Figures \
 
 Some observations: 
 \begin{itemize}
-	\item The first derivative algorithms, although they work properly and quickly, have some problems like discontinuity of the edges. They are also very affected by noise in images, appearing unwanted isolated edges (More sophisticated methods help to avoid and improve this, e.g. Canny edge detector \cite{Canny1986}). \\
+	\item The first derivative algorithms, although they work properly and run fast, have some problems like discontinuity of the edges. They are also very sensitive to noise, which make them detect spurious edges (More sophisticated methods help to avoid and improve this, e.g. Canny edge detector \cite{Canny1986}). \\
 	\item The Marr-Hildreth algorithm (in its two versions) achieved interesting results in the edge detail. This algorithm provides a first attempt to obtain regular edges, because of the filtering with a Gaussian kernel. This behavior can be seen in Lena's hair (Figure \ref{fig:example1}), or inside the oranges (example \ref{fig:example2}). \\
 	\item As mentioned earlier, Haralick's algorithm is the first to assume greater regularity of the image in the neighborhood of a pixel (third order). This causes thicker edges, as shown in both examples. But, note that some edges are only detected with this algorithm, e.g. the lower edges of the oranges, which are in the shadow, in Figure \ref{fig:example2}. These edges are quite smooth, so that the Haralick model is well suited to them, and they do not represent an abrupt change in the intensity to be detected by other methods. \\
 \end{itemize}
@@ -1127,11 +1145,12 @@ Some observations:
 
 %-------------------------------------------------------------------------------
 
+
+\begin{comment}
 \subsection{Video}
 
 As supplementary material, there are videos testing the frame by frame application of these algorithms.
 
-\begin{comment}
 This is an example of applying the edge detection algorithms, frame by frame, to a video: 
 %\begin{itemize}
 %	\centering
@@ -1160,7 +1179,7 @@ This is an example of applying the edge detection algorithms, frame by frame, to
 
 Some of the most traditional methods of edge detection in digital images were discussed and carefully implemented in this work. The implemented algorithms were tested with synthetic and real images, obtaining generally the expected results, taking into account the limitations of these methods. 
 
-The first derivative algorithms (Roberts, Prewitt and Sobel) have the advantage of having a very simple implementation. Also they run extremely fast, because they only consists of a convolution with a very small kernel (2$\times$2 or 3$\times$3 pixels). The results obtained with these methods are quite good, considering their simplicity, but they have problems such as noise and discontinuity of the edges. Gaussian filtering would reduce noise, alleviate (but not solve) the discontinuity of the edges, and would make more fair the comparison with the second derivative methods. 
+The first derivative algorithms (Roberts, Prewitt and Sobel) have the advantage of having a very simple implementation. They also run extremely fast, because their main operation is a convolution with a very small kernel (2$\times$2 or 3$\times$3 pixels). The results obtained with these methods are quite good, considering their simplicity, but they have problems such as noise and discontinuity of the edges. Gaussian filtering would reduce noise, alleviate (but not solve) the discontinuity of the edges, and would make the comparison fairer with the second derivative methods. 
 
 The second derivative algoritms (Marr-Hildreth \& Haralick) involve several more operations, since convolutions with larger kernels are performed. In real images, they have better behavior than first derivative algorithms. 
 
