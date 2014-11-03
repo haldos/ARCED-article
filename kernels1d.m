@@ -29,10 +29,10 @@ ind_LoG = find(area_LoG>=(1-factor),1,'first');
 h = figure('Name','Kernels comparsion','Color','white','Position',[100 100 800 500]);
 plot(x,G,'-r','Linewidth',2); hold on; 
 plot(x,LoG,'-b','Linewidth',2); axis tight;
-title('Comparison of Gaussian and LoG functions');
+%title('Comparison of Gaussian and LoG functions');
 plot(x(ind_G),G(ind_G),'*r','Linewidth',5);
 plot(x(ind_LoG),LoG(ind_LoG),'*b','Linewidth',5);
-% Líneas:
+% L??neas:
 line([0 0],[min(LoG) max(LoG)],'Color','k');
 line([-1*sigma 5*sigma],[0 0],'Color','k');
 line([x(ind_G) x(ind_G)],[min(LoG) max(LoG)],'Color','r','LineStyle','--');
@@ -44,11 +44,17 @@ line([-1*sigma 5*sigma],[-factor*max(LoG) -factor*max(LoG)],'Color','k','LineSty
 line([0 x(ind_G)],[0.6*max(G) 0.6*max(G)],'Color','k','Linewidth',2);
 line([0 x(ind_LoG)],[0.3*max(G) 0.3*max(G)],'Color','k','Linewidth',2);
 % Referencias
+font_size=14;
 hleg = legend('Gaussian function','LoG function');
-set(hleg,'box','Off');
+set(hleg,'box','Off','FontSize',font_size);
 % Texto:
-text(-0.95*sigma,(factor+0.03)*max(LoG),'\pm3% of maximum absolute value','BackgroundColor','white');
-text(sigma,0.6*max(G),[sprintf('~%1.2f',x(ind_G)/sigma) '\sigma'],'FontSize',12,'BackgroundColor','white');
-text(1.2*sigma,0.3*max(G),[sprintf('~%1.2f',x(ind_LoG)/sigma) '\sigma'],'FontSize',12,'BackgroundColor','white');
+
+text(-0.95*sigma,(factor+0.03)*max(LoG),'\pm3% of maximum absolute value','FontSize',font_size,'BackgroundColor','white');
+text(sigma,0.6*max(G),[sprintf('~%1.2f',x(ind_G)/sigma) '\sigma'],'FontSize',font_size,'BackgroundColor','white');
+text(1.2*sigma,0.3*max(G),[sprintf('~%1.2f',x(ind_LoG)/sigma) '\sigma'],'FontSize',font_size,'BackgroundColor','white');
 % Save
 % print(h,'-depsc','kernels.eps');
+%%
+set(h,'PaperSize',[8.5 6])
+set(h,'PaperPosition',[0 0 8.5 6])
+%print(h,'-dpdf','-r500','kernels.pdf')

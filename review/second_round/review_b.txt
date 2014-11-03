@@ -1,0 +1,31 @@
+Dear authors,
+
+ 
+
+I took notice of your corrections. I must say that I have mixed feelings
+about them. I will simply state my major sources of concerns here. Please
+have a look at my annotated pdf for more details.
+
+On the one hand you did improve the only troublesome theoretical part, that
+was  the Haralick algorithm description. I believe you did a fine job in
+this task, although there are still some minor issues (see annotations).
+
+On the other hand, you did not take any account of the issues I raised
+concerning the experimental part. I therefore recap the comments I made the
+previous time here:
+
+-  lack of in-depth study of the impact of parameters
+
+-  lack of validation or challenging of the claims of original authors
+
+-  poor explanation of the thickening observed in the Haralick case.
+
+I am also concerned with a new issue of importance: It seems like with the
+demo I get very different results  from the one presented in your text. The
+difference are particularly obvious for the haralick filter. See my comment
+in figure 15(f).
+
+Furthermore, I am quite disappointed by your refusal to improve your
+conclusion.
+
+Best regards,
