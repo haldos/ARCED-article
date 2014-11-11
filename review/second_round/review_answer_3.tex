@@ -17,7 +17,7 @@
 \author{}
 
 \usepackage{xr}
-\externaldocument{../../edge-detection-review-3rd-revision-v1}
+\externaldocument{../../edge-detection-review-3rd-revision-v2}
 \reversemarginpar
 
 \newcounter{myquestion}
@@ -41,7 +41,7 @@ The remarks from the reviewers are marked with the tag \textcolor{blue}{QUESTION
 \section{General changes}
 \begin{itemize}
  \item Improved instructions in makefile to compile in OSX (libpng headers not found)
- \item Quality of all synthetic images (kernels) has been improved
+ \item Quality of all synthetic images (kernels) has been improved (See corrections \ref{math:common:gauss},\ref{math:common:log} and \ref{math:common:comparison})
 
 \end{itemize}
 
@@ -61,7 +61,7 @@ The code provides the corresponding implementation.\\
 and ambiguities clarified. I have no remark on the scientific content anymore. YET the paper has still a
 presentation issue. It was still not rigorously proofread, there are a lot of mistakes still. The presentation of the figures also needs to be improved.\\
 
-\ans Thank you very much, both reviewers contributed a lot on improving the paper.
+\ans Thank you very much, both reviewers contributed a lot on improving the paper. The writing has been reviewed and the figures completely redone.
 
 \subsection{Minor remarks}
  Again I would recommend proofreading the whole paper, there are still a lot of spelling
@@ -109,8 +109,9 @@ make : [ edges ] Er ror 1
 
 \que This last comment was not answered and not even mentioned in your response letter:
 l62-90, you can precompute $\sigma^2$ and $\sigma^2$ outside of the scopes to avoid unnecessary and inelegant code
-repetition.
-\ans  XXX\\
+repetition.\\
+
+\ans  Although I agree with the concept, I'm not sure about the benefits of this suggestion. Actually they are two suggestions. The first one has to deal with computational cost, In my experience with optimizing code (which is quite vast), I've learnt not guess before quantifying with a profiler. At the current state of compilers I'm quite sure that computation is already optimized out. On ther other hand, with respect to the code repetition, it is repeated, but only two times, and that repetition improves readability. So I rather keep this in its current form. Anyway, I think this is a very minor issue.\\
 
 \subsection{ Demo review}
 \que I was able to play with the demo and it works fine. I would only ask for a link download all results on the
@@ -150,14 +151,20 @@ previous time here:
 \item  poor explanation of the thickening observed in the Haralick case.
 \end{itemize} 
 
+\ans These concerns are addressed  in the answer corresponding to PDF comment PDF19\\
+
 \que
 I am also concerned with a new issue of importance: It seems like with the
 demo I get very different results  from the one presented in your text. The
 difference are particularly obvious for the haralick filter. See my comment
-in figure 15(f).
+in figure 15(f).\\
 
-\que Furthermore, I am quite disappointed by your refusal to improve your
-conclusion.\\
+\ans We had two major problems with this submission. First, there is a bug in the imagemagick convert command in some unixes (I don't currently remember if it is in ubuntu or in mac). This bug made the RGB->grayscale conversion lower the contrast a lot. Thus, we had made the experiements for the paper with the good versions and uploaded the bad versions with the code and the demo. As these algorithms are not contrast invariant, this generated worst results. This is fixed now. The second problem was a bug when the other author made a major refactor of the code. That bug made that the estimation of the k10 coefficient in Haralick was rubbish and thus the result of this algorithm was very bad. This was fixed too.\\
+
+
+\que Furthermore, I am quite disappointed by your refusal to improve your conclusion.\\
+
+\ans In the first review I wasn't sure about the direction you suggested to improve the conclusions, however after giving them a second thoughts and in the light of the new experiments I took notice of them and added an extensive discussion of the results and a considerable number of conclusions. I truly hope you are satisfied now.\\
 
 \section{PDF comments}
 
@@ -172,7 +179,7 @@ $k_i=b_i f$
 \ans done.\\
 
 \que PDF4: Much better!\\
-\ans Thanks! Your contributions helped a lot.
+\ans Thanks! Your contributions helped a lot.\\
 
 \que PDF5: I suggest mentioning right away that all this is done to detect ascending edges. For instance: … is to find ascending steps by looking for "negative slopes …"\\
 \ans I Agree, thanks for the suggestion. I phrased it slightly different, because Haralick's work actually never mentions this explicitely, it is just deduced from the way he poses the problem.\\
@@ -181,7 +188,7 @@ $k_i=b_i f$
 \ans fixed.\\
 
 \que PDF7: notation issue: $x,y$ are different from the previous sentence. Here they are generic coordinates, while in the previous sentence they were a specific point (the one obtained for $\rho=0$. You could use $x(\rho),y(\rho)$ to remove the ambiguity.\\
-\ans Actually, we explained at first that we will normalize coordinates to be offsets from the central point. Thus from that paragraph and below, we can safely assume that x,y is the point in the line and (0,0) is the center. I rewrote many parts of the section to reflect this. See corrections XXX.\\
+\ans Actually, we explained at first that we will normalize coordinates to be offsets from the central point. Thus from that paragraph and below, we can safely assume that x,y is the point in the line and (0,0) is the center. I rewrote many parts of the section to reflect this.\\
 
 \que PDF8:  would be nice to avoid making a typo in a footnote referring to a typo, unless you want things to get really messy! This should read $f_\alpha^{'}(\rho)\neq 0$.\\
 \ans Oh well! This is a shame, I fixed it. Sorry for that!\\
@@ -220,31 +227,37 @@ Also redo the figure with larger text.\\
 \que PDF19: This section is still very poor. 
 You did not take any of my comments into consideration, not even the merging of small paragraphs into larger ones.
 I therefore recap the comments I made the previous time here (see the original ones for more details)
--  lack of in-depth study of the impact of parameters
-- lack of validation or challenging of the claims of original authors
-- poor explanation of the thickening observed in the Haralick case.
+1) lack of in-depth study of the impact of parameters\\
+2) lack of validation or challenging of the claims of original authors\\
+3) poor explanation of the thickening observed in the Haralick case.\\
 
-I am also concerned with a new issue of importance: It seems like with the demo I get very different results  than the one presented here. The difference are particularly obvious for the haralick filter. See my comment in figure 15(f)
+4)I am also concerned with a new issue of importance: It seems like with the demo I get very different results  than the one presented here. The difference are particularly obvious for the haralick filter. See my comment in figure 15(f)\\
 
-\ans XXX\\
+\ans I separated these issued in four points in order to properly answer them.\\
+1) We added two sections with figures showing the effect of various thresholds in single images and we also added a saliency map which summarizes the results of each algorithm across all scales. We added examples showing the effect of smoothing for the particular case of Marr. See corrections \ref{results:parameter:scale} and \ref{results:parameter:smooth}\\
+2) We discussed most of the most important claims of the original authors. The only exception were the quantitative results of Haralick. See correction corrections \ref{results:discussion} \\
+3) I will answer this on question PDF22.\\
 
-\que PDF20: This experiment cannot be faithfully reproduced in the demo because figure 12 is not in the input list
+\que PDF20: This experiment cannot be faithfully reproduced in the demo because figure 12 is not in the input list\\
 
-\ans XXX\\
+\ans The square image and the rest of images used in the paper have been added to the demo.\\
 
 \que PDF21: running the same experiment in the demo, I get a much noiser result. See
-http://dev.ipol.im/~juanc/ipol_demo/sc_edges/tmp/7A8BE1B97C40DAA903141EA7906D527E/out_haralick.png
+\url{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/tmp/7A8BE1B97C40DAA903141EA7906D527E/out_haralick.png}\\
+\ans Thanks for pointing this out, we found a bug due a refactor of the code in previous review. It is now tested and validated.\\
 
-\ans XXX\\
 
-\que You did not answer my point here. I think I misunderstood you in the first place, but this is because your explanation lacks details. Therefore I am still not satisfied by this explanation. 
+\que PDF22: You did not answer my point here. I think I misunderstood you in the first place, but this is because your explanation lacks details. Therefore I am still not satisfied by this explanation. 
 The way you put it is misleading, because you give the impression to think that the fattening of the edge is due to smoothing. If you truly believe this, then I think that you are wrong.
 
 Another way to interpret your explanation is that the spline interpolation if applied to sharp edges (that is when the regularity assumption is at fault) then ringing occurs which creates many duplicated edges. If you agree that this is the right explanation, and that was what you meant in the first place, please improve the formulation of your explanation. And illustrate it graphically.
 
-Otherwise, if you think that the first explanation is the right one, then  add an experiment to verify who is right and who is wrong. The experiment could consist in  plotting  the profile of a synthetic interpolated edge. Take a perfect step as input, and see what you get. You should definitely observe ringing!
+Otherwise, if you think that the first explanation is the right one, then add an experiment to verify who is right and who is wrong. The experiment could consist in  plotting  the profile of a synthetic interpolated edge. Take a perfect step as input, and see what you get. You should definitely observe ringing!
 
-\ans XXX\\
+\ans I tried to explain the phenomenon in detail, however, until now I haven't found a detailed explanation that completely satisfies me. My preliminary tests does not show ringing. I think the degree of the polynomial is too low to show it (only 3 roots).
+The most convincing conjecture I have is due to the way the third condition is relaxed. The idea is to allow for solution that are not exactly at $\rho=0$, thus, we \emph{search} for the solution on an neighborhood. However this search is naive, because we allow as solutions all values where $|\rho|<|\rho_0|$. I see this problem equivalent to finding the zero of a function, if you look for all the x such that $|f(x)<\de|ta$ this will give you a \emph{fat} root.
+
+Anyway, as we have passed all reasonable thresholds for the publication of this paper, and if you don't consider this issue critical, I would propose to leave it as is or remove any explanations that could be missleading. Otherwise, we could ask the editor for his opinion on this subject
 
 \bibliographystyle{unsrt}
 \bibliography{../../tools/journal_list_short,../../tools/references,../../tools/hierarchical_segmentation}

@@ -236,11 +236,42 @@
   \includegraphics[width=\anchocinco]{\figDirC/#1/output_mean}%
 }
 
-\newcommand{\figRowMultiscaleH}[1]{
-  \includegraphics[width=\anchocuatro]{\figDir/#1}%
-  \includegraphics[width=\anchocuatro]{\figDir/inverted/#1_saliency_lambda}%
-    \includegraphics[width=\anchocuatro]{\figDir/guigues/inverted/#1_saliency}%
+\newcommand{\figRowMultiscaleH}[3]{
+  \includegraphics[width=\anchocuatro]{#1/data/#3}%
+  \includegraphics[width=\anchocuatro]{#1/#2/multi/#3_saliency_lambda}%
 }
+
+\newcommand{\figRowMultiscaleHH}[2]{
+  \includegraphics[width=\anchocuatro]{#1/data/#2}%
+  \includegraphics[width=\anchocuatro]{#1/roberts/multi/#2_saliency_lambda}%
+  \includegraphics[width=\anchocuatro]{#1/sobel/multi/#2_saliency_lambda}%
+  \includegraphics[width=\anchocuatro]{#1/prewitt/multi/#2_saliency_lambda}%
+}
+
+
+\newcommand{\figRowMultiscaleHHHH}[2]{
+  \includegraphics[width=\anchocuatro]{#1/data/#2}%
+  \includegraphics[width=\anchocuatro]{#1/mh_sigma_2/multi/#2_saliency_lambda}%
+  \includegraphics[width=\anchocuatro]{#1/mhl_sigma_2/multi/#2_saliency_lambda}%
+  \includegraphics[width=\anchocuatro]{#1/haralick/multi/#2_saliency_lambda}%
+}
+
+\newcommand{\figRowMultiscaleHHH}[3]{
+  \includegraphics[width=\anchocuatro]{#1/data/#3}%
+  \includegraphics[width=\anchocuatro]{#1/#2/#3/output_0.10.png}%
+\includegraphics[width=\anchocuatro]{#1/#2/#3/output_0.20.png}%
+ \includegraphics[width=\anchocuatro]{#1/#2/#3/output_0.30.png}%
+}
+
+
+\newcommand{\figRowMultiscaleSigma}[3]{
+  \includegraphics[width=\anchocuatro]{#1/data/#3}%
+  \includegraphics[width=\anchocuatro]{#1/#2/#3/output_1.00.png}%
+\includegraphics[width=\anchocuatro]{#1/#2/#3/output_2.00.png}%
+ \includegraphics[width=\anchocuatro]{#1/#2/#3/output_3.00.png}%
+  \includegraphics[width=\anchocuatro]{#1/#2/#3/output_4.00.png}%
+}
+
 \newcommand{\figRowMultiscaleV}[1]{
   \includegraphics[width=\anchocinco]{\figDir/#1}%
   \includegraphics[width=\anchocinco]{\figDir/inverted/#1_saliency_lambda}%
@@ -248,11 +279,6 @@
 }
 
 
-\newcommand{\figRowMultiscaleHH}[1]{
-  \includegraphics[width=\anchocuatro]{\figDir/#1}%
-  \includegraphics[width=\anchocuatro]{\figDir/inverted/#1_saliency_lambda}%
-    \includegraphics[width=\anchocuatro]{\figDirB/inverted/#1_saliency_lambda}%
-}
 \newcommand{\figRowMultiscaleVV}[1]{
   \includegraphics[width=\anchocinco]{\figDir/#1}%
   \includegraphics[width=\anchocinco]{\figDir/inverted/#1_saliency_lambda}%
