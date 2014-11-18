@@ -111,7 +111,7 @@ and serves as an introduction to a more sophisticated
 analysis of the edge detection process.
 
 % en este parrafo, puede ser cambiar trough por valley
-In 1980 Marr and Hildreth \cite{segm:edge_region:marr:80:digital_step} argued that intensity changes are not independent 
+In 1980 Marr and Hildreth \cite{segm:edge_region:marr:84:digital_step} argued that intensity changes are not independent 
 of image scale, so edge detection requires the use of different size 
 operators. They also argued that a sudden intensity change will be seen 
 as a peak (or valley) in the first derivative or, equivalently, as a zero 
@@ -259,7 +259,7 @@ by taking the difference between the third and first rows (or columns) of the $3
 difference between the third and first rows approximates the derivative in the x-direction, and 
 the difference between the third and first columns approximates the derivative in the y-direction.
 These approximations can be implemented by filtering the image with the two masks in Figure \ref{fig:prewitt}.
-These masks are called \textit{Prewitt operators} \cite{prewitt1970object}. 
+These masks are called \textit{Prewitt operators} \cite{im_proc:segmentation:prewitt:1970:object_enhancement}. 
 
 \begin{figure}[1][!h]
 	\centering
@@ -407,7 +407,7 @@ The edge detection methods discussed in the previous section are simply based on
 image with different masks, without taking into account the characteristics of the edges or 
 noise in the image. 
 
-\myn{\label{second:references}}The two algorithms presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:80:digital_step} and Haralick \cite{bb20239}) 
+\myn{\label{second:references}}The two algorithms presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:84:digital_step} and Haralick \cite{bb20239}) 
 are based on the second derivative of the image, and both take steps to reduce noise before 
 detecting edges in the image.
 
@@ -519,7 +519,7 @@ Zero crossing detection is the key feature of the Marr-Hildreth edge detection m
 presented in the previous paragraph is attractive for its simplicity of implementation and its low 
 computational cost. In general it is a technique that yields good results, but if more precision in 
 finding the zero crossings is needed, more advanced methods for finding zero crossings with subpixel 
-accuracy could be used (e.g.\ marching squares \cite{marching_cubes}).
+accuracy could be used (e.g.\ marching squares \cite{comp_graph:surf_recon:lorensen:87:marching_cubes}).
 
 %-------------------------------------------------------------------------------
 
@@ -739,7 +739,7 @@ Let us consider the line $r$ passing by $(0,0)$ with angle $\theta$. The coordin
 	y = \rho\cos{\theta} 
 \end{align*}
 
-If we substitute the above expressions in the bi-cubic polynomia of eq., we obtain
+If we substitute the above expressions in the bi-cubic polynomial of Eq. \ref{eq:bicubic}, we obtain
 
 \begin{equation}
 	f_{\theta}(\rho) = C_0 + C_1\rho + C_2\rho^2 + C_3\rho^3 ,
@@ -782,7 +782,7 @@ should be zero at $\rho=0$. But due to the finite nature of the image grid, the 
 With this relaxation, the condition \ref{eq:haralick:cond_b_orig} becomes
 
 \begin{equation}
-\exists\rho \in [0,\rho_0) \:\:  \mathtt{such\:that}  \:\:  2C_2 + 6C_3\rho = 0 \\
+\exists\rho \in (-\rho_0,\rho_0) \:\:  \mathtt{such\:that}  \:\:  2C_2 + 6C_3\rho = 0 \\
 \end{equation}
 
 Thus, the solution is $\rho_*=-\frac{C_2}{3C_3} $ and imposing $|\rho_*|<\rho_0$ we obtain the second condition
@@ -1140,13 +1140,13 @@ Some observations:
 \subsection{Effect of the scale parameter}
 \myn{\label{results:parameter:scale}}In this section we will discuss the effect of the parameters for each of the reviewed algorithms. As a general rule, they all take one threshold parameter which acts as a scale parameter. As Figure \ref{fig:results:parameters:roberts:parameter} shows for the \emph{Roberts} algorithm, the bigger that threshold is, the coarser is the edge map obtained.
 
-In Figure \ref{fig:results:parameters:roberts:saliency} we show a summary of the threshold's behavior for this algorithm, in the whole range of possible values $[0,1]$. For each image, this information is summarized in a saliency map which serves to asses the quality of the hierarchical set of edges obtained.
+In Figure \ref{fig:results:parameters:roberts:saliency} we show a summary of the threshold's behavior for this algorithm, in the whole range of possible values $[0,1]$. For each image, this information is summarized in a saliency map which serves to assess the quality of the obtained hierarchical set of edges.
 The saliency map is constructed by sampling the scale range (using steps of $0.05$) and computing the edge map corresponding for each scale. Then each edge is labeled with its scale of disappearance $\alpha^-$, which is the maximum scale at which an edge is present in the output edge map. This scale is drawn with a \emph{hot} colormap (black, red, yellow, white). Intuitively, this means that 'hotter' edges last longer across scales and thus are more meaningful.
 These results show two important properties. First, the obtained stack of edges are causal, i.e. as the scale parameter increases the edge map gets coarser. This can be verified by observing the values of $\alpha^-$ assigned to each contour.
 If a contour has a high $\alpha^-$ value it means that it will survive for a long time in the merging process. On the other hand, small values mean that it will be removed at early stages.
 As the figure shows, the highest values of $\alpha^-$ are assigned to the most coarser segmentation.
 And second, the stack of edges is geometrically accurate, i.e. the borders present in each scale are a strict subset of the previous (finer) scale. If they were not included they will be seen as new contours in the saliency map.
-These results empirically show that the obtained hierarchy holds the strong causality property introduced by Morel and Solimini \cite{book:morel:95:variational_pde}.
+These results show empirical evidence that the obtained hierarchy holds the strong causality property, introduced by Morel and Solimini \cite{book:morel:95:variational_pde}.
 
 In Figures \ref{fig:results:parameters:first:saliency:a} and \ref{fig:results:parameters:first:saliency:b} we compare the three first derivative algorithms by means of their saliency maps. As the results show, they all present a similiar behavior, however the are small differences in the results of Roberts vs the other two algorithms. For example, edges surrounding the segments of the orange are better defined, because they have more relative weight than other spurious borders. This is explained by the smoothing introduced by Prewitt and Sobel masks explained in Sections \ref{sec:first:sobel} and \ref{sec:first:sobel}, which removes theses spurious edges and thus improves the meaningfulness of the stable ones.
 
@@ -1154,7 +1154,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 
 
 \renewcommand{\anchocinco}{2.5cm}
-\newcommand{\anchocuatro}{5cm}
+\newcommand{\anchocuatro}{4.5cm}
 
 \begin{figure*}[ht]
   \centering
@@ -1177,7 +1177,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 %\vskip \espaciotabla
 \end{figure*}
 
-\renewcommand{\anchocuatro}{5cm}
+\renewcommand{\anchocuatro}{4.5cm}
 
 \begin{figure*}[ht]
   \centering
@@ -1231,11 +1231,11 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \subsection{Discussion}
 \myn{\label{results:discussion}}In this section we will discuss the obtained results and contrast them with the claims made by the original authors.
 In the case of the first derivative algorithms, they are very simple and the claims made by the original authors are straight forward to verify. The Roberts algorithm was presented in his Phd Thesis (\cite{im_proc:segmentation:roberts:1963:boundary_extraction}, Chapter IV ) as a step of a more complex 3D reconstruction system. For this reason, only qualitative results are shown on few images. The effects of the parameter or the discretization is not validated. The only observation made in that work is the presence of spurious edges due to noise (pg. 31), which are removed by a line fitting postprocessing.
-With respect to Prewitt and Sobel Operators, 
+With respect to \emph{Prewitt} and \emph{Sobel} operators, they are arise from an in-depth study of different ways to discretize the gradient. In \cite{im_proc:segmentation:prewitt:1970:object_enhancement} these discretizations are discussed and compared qualitatively. In this work we tested only two of the possible discretizations, and we obtained very similar results using both operators. On the other hand, they show better performance that the \emph{Roberts} mask;
 
-In Haralick's work, there is an interesting quantitative validation over a synthetic grid. On that evaluation, sensitivity to noise as well as comparative performance with Prewitt operators. As in this work we didn't benchmark quantitaive
+In Haralick's work, there is an interesting quantitative validation over a synthetic grid. On that evaluation, he shows results of noise sensitivity as well as comparative performance with Prewitt operators. As in this work we didn't focus on quantitative benchmarks, we didn't reproduce those results.
 
-The obtained results validate the original claims made by Marr \cite{segm:edge_region:marr:80:digital_step}, were he made the following observations:
+The obtained results validate the original claims made by Marr \cite{segm:edge_region:marr:84:digital_step}, where he made the following observations:
 \begin{itemize}
 \item "A major difficulty with natural images is that changes can and do occur over a
 wide range of scales (Marr 1976a, b). No single filter can be optimal simultaneously at all scales, so it follows that one should seek a way of dealing separately with the changes occurring at different scales. ". 
@@ -1245,7 +1245,7 @@ wide range of scales (Marr 1976a, b). No single filter can be optimal simultaneo
 \item "Physical edges will produce roughly coincident zero-crossings in channels of nearby sizes. The spatial coincidence assumption asserts that the converse of this is true, that is the coincidence of zero crossings is sufficient evidence for the existence of a real physical edge. If the zero-crossings in one channel are not consistent with those in the others, they are probably caused by different physical phenomena, so descriptions need to be formed from both sources and kept somewhat separate."
 \end{itemize}
 
-The first claim is validated in our experiments varying the $\sigma$ parameter, where we observed that no single value will allow us to obtain all the meaningful edges. The same reasoning applies to the zero crossing threshold $t_{ZC}$ .
+The first claim is validated in our experiments by varying the $\sigma$ parameter, where we observed that no single value will allow us to obtain all the meaningful edges. The same reasoning applies to the zero crossing threshold $t_{ZC}$ .
 
 The second observation is evidenced by the halos seen in the blades of the windmill, see inside left blade and left of the top blade in Figure \ref{fig:result3-e} . \footnote{Please look at these issues in the electronic version or the online demo, as they are not noticeable in the printed version.}
 
@@ -1320,15 +1320,15 @@ All algorithms have their advantages and disadvantages. Choosing one or the othe
 
 With respect to the parameters, these methods require the manual determination of the parameters, and it is very hard to find a single threshold value suitable for a broad category of examples. In this sense, \emph{A contrario} methods provide a better approach for setting parameters.
 For this reason, most modern approaches use a multiscale approach, were edges are detected at many different scales and the optimum scale is chosen a posteriori, as proposed in \cite{morphology:watershed:najman:1996:geodesic_saliency} or \cite{im_proc:segmentation:arbelaez:2006:boundary_extraction}.
-This idea can be even extended to pick edges at different scales depending on the region of the image (see \cite{segm:cardelino:2012:a_contrario_selection_of_optimal_partitions} for a similar idea applied to regions).
+This idea can be even extended to pick edges at different scales depending on the region of the image (see \cite{segm:cardelino:2013:a_contrario_selection_of_optimal_partitions} for a similar idea applied to regions).
 
 \subsection{Future work}
 
-The goal of this work was to provide reference implementation for some of the most classical edge detectors. Some of them have been published for many years and are quite simple, however, it is surprisingly hard to find trustable implementations. We focused on low-level edge detection, which means that we do not consider post processing steps to integrate the detected edgels into meaningul lines.
+The goal of this work was to provide reference implementations for some of the most classical edge detectors. Some of them have been published for many years and are quite simple, however, it is surprisingly hard to find trustable implementations. We focused on low-level edge detection, which means that we do not consider post processing steps to integrate the detected edgels into meaningul lines.
 Extensive qualitative validation has been performed, showing the effects of the parameters and the scale-space properties of the algorithms in order to faithfully compare them.
 We consider this work as the first step towards a complete benchmark of edge detectors, which has to be completed with a systemic quantitative analysis. 
-A suitable framework for this quantitative analysis is discussed and applied in \cite{segm:cardelino:2012:a_contrario_selection_of_optimal_partitions}, but this is clearly outside the scope of this work.
-In particular, quantitative challenging the claims of the reviewed works will be a great contribution for the area, which is very weak with respect to experimental validation. From the original works reviewed, only Haralick presents a quantitative analysis but only over one synthetic images. Even at the moment of writing (2014), there are only a dozen edge detection and segmentation works presenting a serious quantitative analysis over a standard database of images.
+A suitable framework for this quantitative analysis is discussed and applied in \cite{segm:cardelino:2013:a_contrario_selection_of_optimal_partitions}, but this is clearly outside the scope of this work.
+In particular, quantitative challenging the claims of the reviewed works will be a great contribution for the area, which is very weak with respect to experimental validation. From the original works reviewed, only Haralick presents a quantitative analysis but only over one synthetic image. Even at the moment of writing (2014), there are only a dozen edge detection and segmentation works presenting a serious quantitative analysis over a standard database of images.
 
 %To conclude, this paper is a summary of some classical edge detection algorithms. In the preparation of this paper, no similar material (concentrated in one text) was found, so this paper appears to be useful material for whom starts studying edge detection methods. \\
 
