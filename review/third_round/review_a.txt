@@ -1,0 +1,74 @@
+Reviewer A:
+
+I think the paper scientific content is now ready.
+
+Apart from that, I had some problems with an experiment (see below) and I
+think the authors did not follow the reviewers advice to reread the paper.
+There were numerous grammatical errors, as well as typos or presentation
+problems, which could have been easily avoided and made this review very
+painful.
+I'll leave it to the editor to decide whether he prefers another revision or
+move directly to editing.
+
+
+****CODE
+The code compiles fine, and "make test" also works. But when I run it with
+"oranges.png" it fails (tried several parameters and both prewitt and
+roberts). The problem seems to happen when reading the image
+
+ ./edges input/oranges.png -p 0.2
+A review of classic edge detection algorithms
+Haldo Sponton & Juan Cardelino, IPOL 2014
+
+Input image: 0.2
+Size: 140655700885148 x 140733592255632
+
+Number of algorithms to run: 1
+Error: xmalloc: out of memory
+Running Prewitt, threshold=0.20"
+
+On the other hand, the image size is ok when I don't try to run any
+algorithm:
+ ./edges input/oranges.png
+A review of classic edge detection algorithms
+Haldo Sponton & Juan Cardelino, IPOL 2014
+
+Input image: input/oranges.png
+Size: 536 x 480
+
+Number of algorithms to run: 0
+
+
+
+Can you check it out?
+
+****DEMO
+Concerning my requirement for the demo, I was not asking for an archive of
+all demo results, which would be meaningless, but for each experiment an
+archive containing the results of  the different detections instead of
+having to download each detection result separately.
+
+*** PAPER
+
+Algorithm 2 why not merge lines 7-8?
+
+Then a list of errors (again). AGAIN I did not write all mistakes down, so I
+strongly encourage you to proofread your paper.
+
+abstract: results obtained from a qualitative point of view... -> rephrase
+p1: "operations operations"
+p1: two footnotes with the same url address.
+p2: "a disconnected an unordered "???
+p4:  a slight variation of [...] difference -> rephrase, no main verb in
+that sentence.
+p4: "their filter are" -> singular or plural?
+p4: different thresholds lead to different results. Thicker... -> results:
+thicker...
+p5: [h!] in front of each figure.
+p8: consists on convolving
+p8 not only... BUT also
+p24: "are arise"
+p25: ".
+p29: "results [...] algorithms our sample images." fig 20-21-22-23
+
+

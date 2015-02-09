@@ -1,0 +1,274 @@
+\newcommand{\resDir}{/home/juan/juanc/resultados/tmaps/unimodal}
+\newcommand{\figDir}{\resDir/doc/img}
+\newcommand{\resSubDir}{nada}
+\newcommand{\imdir}{./img}
+\newcommand{\ancho}{5cm}
+\newcommand{\anchouno}{10cm}
+\newcommand{\anchodos}{6cm}
+\newcommand{\anchotres}{4.5cm}
+\newcommand{\anchocinco}{2.5cm}
+
+\newcommand{\tcom}[1]{
+\textcolor{red}{#1}
+}
+
+\newcommand{\interno}[1]{
+\textcolor{cyan}{#1}
+}
+
+%\renewcommand{\interno}[1]
+%{}
+
+\newcommand{\ans}{
+\textcolor{red}{ANSWER}
+}
+
+\newcommand{\ta}[1]{
+\textcolor{red}{#1}
+}
+
+\newcommand{\que}{
+\refstepcounter{myquestion}
+\textcolor{blue}{QUESTION \themyquestion}
+}
+
+\newcommand{\quel}[1]{
+\refstepcounter{myquestion}
+\textcolor{blue}{QUESTION \themyquestion #1}
+}
+
+\newcommand{\refc}[1]{Correction \ref{#1}}
+
+\newcommand{\mynote}[1]{% a simple margin note
+        \refstepcounter{mynote}% step counter
+        \mbox{\textsuperscript{\ta{C\themynote}}}% the number (superscript) in text
+        \marginnote{\mbox{\ta{C\themynote}}\ta{#1}}% the note
+}
+
+\newcommand{\mynf}[1]{% a simple margin note
+        \refstepcounter{mynote}% step counter
+        \mbox{\textsuperscript{\ta{C\themynote}} #1}% the number (superscript) in text
+}
+
+\newcommand{\myn}{% a simple margin note
+        \refstepcounter{mynote}% step counter
+        \mbox{\textsuperscript{\ta{C\themynote}}}% the number (superscript) in text
+        %\marginnote{\mbox{\ta{C\themynote}}}% the note
+        \marginpar{\mbox{\ta{C\themynote}}}
+}
+
+\newcommand{\figname}{figurita}
+
+\newcommand{\figTmaps}[2]{
+	\begin{figure}[ht]
+	\centering
+	\subfigure[1st bounds]{\label{\resSubDir:#1:res:segm}%
+	\includegraphics[width=\anchotres]{\figDir/#1/segm_bounds}%
+	}%
+	\subfigure[2nd bounds]{ \label{\resSubDir:#1:res:merge}%
+	\includegraphics[width=\anchotres]{\figDir/#1/merge_bounds}%
+	}%
+	\subfigure[regions]{ \label{\resSubDir:#1:res:region}%
+	\includegraphics[width=\anchotres]{\figDir/#1/merge_regions}%
+	}%
+	\caption{Example #2}
+	\label{\resSubDir:#1:res}
+	\end{figure}
+}
+
+\newcommand{\figTmapsB}[2]{
+	\begin{figure}[ht]
+	\centering
+	\subfigure[regions]{\label{\resDir:\resSubDir:#1:res:segm}%
+	\includegraphics[width=\anchodos]{\figDir/#1/merge_regions}%
+	}%
+	\subfigure[boundaries]{ \label{\resDir:\resSubDir:#1:res:merge}%
+	\includegraphics[width=\anchodos]{\figDir/#1/merge_bounds}%
+	}%
+	\caption{Example #2}
+	\label{\resDir:\resSubDir:#1:res}
+	\end{figure}
+}
+
+\newcommand{\figMeanBest}[2]{
+	\begin{figure}[ht]
+	\centering
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_0}%
+	\includegraphics[width=\anchocinco]{\figDir/#1/mean_bounds_0}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_1}%
+	\includegraphics[width=\anchocinco]{\figDir/#1/mean_bounds_1}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_2}%
+	\includegraphics[width=\anchocinco]{\figDir/#1/mean_bounds_2}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_3}%
+	\includegraphics[width=\anchocinco]{\figDir/#1/mean_bounds_3}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_4}%
+	\includegraphics[width=\anchocinco]{\figDir/#1/mean_bounds_4}%
+	}%
+	\caption{Example #2}
+	\label{\resDir:\resSubDir:#1:res}
+	\end{figure}
+}
+
+% \newcommand{\figTmaps}[2]{
+% 	\begin{figure}[h]
+% 	\centering
+% 	\subfigure[1st stage]{\label{#1:res:segm}%
+% 	\includegraphics[width=\anchodos]{\figDir/#1/segm_bounds}%
+% 	}
+% 	\subfigure[2nd stage]{ \label{#1:res:merge}%
+% 	\includegraphics[width=\anchodos]{\figDir/#1/merge_bounds}%
+% 	}%
+% 	\caption{Example #2}
+% 	\label{#1:res}
+% 	\end{figure}
+% }
+
+
+\newcommand{\figMeanRegionsBest}[2]{
+	\begin{figure*}[ht]
+	\centering
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:orig}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:mean_0}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_00}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:mean_1}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_01}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:mean_2}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_02}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:mean_3}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_03}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:rank:mean_4}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_04}%
+	}%
+	\caption{#2}
+	\label{\resDir:\resSubDir:#1:rank}
+	\end{figure*}
+}
+
+\newcommand{\figMeanRegionsBestRaw}[2]{
+	\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_00}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_01}\\
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_02}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_03}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_regions_04}%
+	\caption{#2}
+	\label{\resDir:\resSubDir:#1:rank}
+	\end{figure}
+}
+
+\newcommand{\figMeanRegionsBestRawB}[2]{
+	\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/orig}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/mean_regions_00}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/mean_regions_01}\\
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/mean_regions_02}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/mean_regions_03}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1/mean_regions_04}%
+	\caption{#2}
+	\label{\resDir:\resSubDir:#1:rank}
+	\end{figure}
+}
+
+\newcommand{\figInitSegment}[2]{
+	\begin{figure}[ht]
+	\centering
+	\subfigure{ \label{\resDir:\resSubDir:#1:detalle:orig}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_0_orig}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:detalle:init}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_1_init}%
+	}
+	\subfigure{ \label{\resDir:\resSubDir:#1:detalle:res}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_2_res}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:detalle:bordes}%
+	\includegraphics[width=\anchocinco]{\figDir/ejemplo#1_4_last_rm}%
+	}%
+	\caption{#2: \subref{\resDir:\resSubDir:#1:detalle:orig} Original Image $N=38801$. \subref{\resDir:\resSubDir:#1:detalle:init} Initial regions $M=328$
+\subref{\resDir:\resSubDir:#1:detalle:res} Segmentation results using the data term only $N_d=30$. \subref{\resDir:\resSubDir:#1:detalle:bordes} Segmentation results after adding the boundary term $N_c=24$.}
+	\label{\resDir:\resSubDir:#1:detalle}
+	\end{figure}
+}
+
+
+\newcommand{\figOne}[2]{
+	\begin{figure}[ht]
+	\centering
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_0}%
+	\includegraphics[width=\anchocinco]{\resDir/#1}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_1}%
+	\includegraphics[width=\anchocinco]{\figDir/#1_init}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_2}%
+	\includegraphics[width=\anchocinco]{\figDir/#1_data}%
+	}%
+	\subfigure{ \label{\resDir:\resSubDir:#1:res:mean_3}%
+	\includegraphics[width=\anchocinco]{\figDir/#1_mean}%
+	}%
+	\caption{Example #2}
+	\label{\resDir:\resSubDir:#1:res}
+	\end{figure}
+}
+
+
+\newcommand{\figDirB}{im/quantitative/set_cielab_7_final/plot}
+\newcommand{\figDirC}{im/quantitative/set_cielab_7_final/plot}
+
+\newcommand{\figRowAlgos}[1]{
+  \includegraphics[width=\anchocinco]{\figDir/#1/orig}%
+  \includegraphics[width=\anchocinco]{\figDir/#1/output_init}%
+  \includegraphics[width=\anchocinco]{\figDir/#1/output_mean}%
+  \includegraphics[width=\anchocinco]{\figDirB/#1/output_mean}%
+  \includegraphics[width=\anchocinco]{\figDirC/#1/output_mean}%
+}
+
+\newcommand{\figRowMultiscaleH}[1]{
+  \includegraphics[width=\anchocuatro]{\figDir/#1}%
+  \includegraphics[width=\anchocuatro]{\figDir/inverted/#1_saliency_lambda}%
+    \includegraphics[width=\anchocuatro]{\figDir/guigues/inverted/#1_saliency}%
+}
+\newcommand{\figRowMultiscaleV}[1]{
+  \includegraphics[width=\anchocinco]{\figDir/#1}%
+  \includegraphics[width=\anchocinco]{\figDir/inverted/#1_saliency_lambda}%
+  \includegraphics[width=\anchocinco]{\figDir/guigues/inverted/#1_saliency}%
+}
+
+
+\newcommand{\figRowMultiscaleHH}[1]{
+  \includegraphics[width=\anchocuatro]{\figDir/#1}%
+  \includegraphics[width=\anchocuatro]{\figDir/inverted/#1_saliency_lambda}%
+    \includegraphics[width=\anchocuatro]{\figDirB/inverted/#1_saliency_lambda}%
+}
+\newcommand{\figRowMultiscaleVV}[1]{
+  \includegraphics[width=\anchocinco]{\figDir/#1}%
+  \includegraphics[width=\anchocinco]{\figDir/inverted/#1_saliency_lambda}%
+  \includegraphics[width=\anchocinco]{\figDirB/inverted/#1_saliency_lambda}%
+}
+
+\newcommand{\figrow}[1]{
+	\includegraphics[width=\anchocinco]{\resDir/#1}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDir/#1_init}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDir/#1_data}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDir/#1_mean}%\hskip{0.01cm}
+}
+
+\newcommand{\figrowB}[1]{
+	\includegraphics[width=\anchocinco]{\resDir/#1}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDir/#1_init}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDir/#1_mean}%\hskip{0.01cm}
+	\includegraphics[width=\anchocinco]{\figDirB/#1_mean}%\hskip{0.01cm}
+}

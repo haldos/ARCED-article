@@ -1,0 +1,267 @@
+\documentclass[a4paper,10pt]{report}
+
+\usepackage[english]{babel}
+%\usepackage[none]{hyphenat}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage[pdftex]{hyperref}
+%\usepackage[tight,scriptsize]{subfigure}
+%\usepackage{ucs}
+%\usepackage[utf8x]{inputenc}
+\usepackage{jfc}
+\hypersetup{hypertexnames, plainpages=false,colorlinks=true}
+\usepackage{amsmath}
+
+% Title Page
+\title{}
+\author{}
+
+\usepackage{xr}
+\externaldocument{../../edge-detection-review-3rd-revision-v2}
+\reversemarginpar
+
+\newcounter{myquestion}
+\newcommand{\ml}{\mathcal{L}}
+\newcommand{\ms}{\mathcal{S}}
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\chapter{Introduction}
+In this communication we answer to the third round of review of the article "A review of Classic edge detectors", submitted to the Image Processing Online Journal.
+In the first place, we would like to thank again the reviewers for the detailed and thoughtful review provided. In the following we address the issues raised by the reviewers. For each issue, an answer is provided and a cross-reference with a red tag $C_n$ (where n is the number of the correction) to the corresponding (corrected) part of the paper is provided. In addition, changes made to the paper are highlighted in red (when significative) in the new version of the paper. 
+These red marks will be removed for the final version.
+
+The remarks from the reviewers are marked with the tag \textcolor{blue}{QUESTION} and our answers with the tag \ans.
+
+%\section{Brief summary of changes}
+\section{General changes}
+\begin{itemize}
+ \item Improved instructions in makefile to compile in OSX (libpng headers not found)
+ \item Quality of all synthetic images (kernels) has been improved (See corrections \ref{math:common:gauss},\ref{math:common:log} and \ref{math:common:comparison})
+
+\end{itemize}
+
+
+\chapter{Answers to reviewer \#1}
+
+\section{Summary}
+
+\que This paper reviews classic edge detectors based on the first and second derivatives of the image. It focuses
+on three first-derivative based algorithms (namely Sobel, Prewitt and Roberts) and two second-derivative
+based algorithms (Marr-Hildreth and Haralick). The paper itself explains all the implementation details.
+The code provides the corresponding implementation.\\
+
+\section{Paper review}
+
+\que In comparison with the original submission the paper has improved a lot: many mistakes have been corrected
+and ambiguities clarified. I have no remark on the scientific content anymore. YET the paper has still a
+presentation issue. It was still not rigorously proofread, there are a lot of mistakes still. The presentation of the figures also needs to be improved.\\
+
+\ans Thank you very much, both reviewers contributed a lot on improving the paper. The writing has been reviewed and the figures completely redone.
+
+\subsection{Minor remarks}
+ Again I would recommend proofreading the whole paper, there are still a lot of spelling
+mistakes. I stopped writing them all down, but this list is not at all exhaustive, do not restrict to only
+correcting these mistakes.
+
+\que C3: continuos -> continuous\\
+\ans fixed\\
+\que C3: where a pixel is evenly sample on a grid \\
+\ans fixed\\
+\que p5: take value -> takes value \\
+\ans fixed.\\
+\que  p10: polinomial \\
+\ans fixed in several places\\
+\que p10 coefficientes \\
+\ans fixed in several places\\
+\que p12 Thus, and pixel\\
+\ans fixed.\\
+\que Algorithm 3: BibTex RIS RefWorks ???\\
+\ans fixed.\\
+\que Algorithm 3, line 2: 5x5 please write 5 x 5
+\ans fixed\\
+\que Fig. 9,10,11: the positioning of the caption is really strange, besides the resolution of these images is not sufficient for a display at this size, the text in the images appears blurry. must be greater"\\
+\ans Changed captions to standard places. Changed to vectorial formats, now size is correct.\\
+\que instead a Gaussian kernel\\
+\ans fixed\\
+\que auxiliar\\
+\ans fixed\\
+\section{Code review}
+
+\que Compared to the first submission, I was unable to compile the new code (ubuntu 14.04, gcc 4.8.2)
+\begin{verbatim}
+$ make
+c99 -o edges edges . c io png . c c l a s s i c e d g e d e t e c t o r s . c -lpng -lm
+c l a s s i c e d g e d e t e c t o r s . c : In func t i on g a u s s i a n k e r n e l :
+c l a s s i c e d g e d e t e c t o r s . c : 7 0 : 5 0 : e r r o r : M P I unde c lar ed ( f i r s t use in t h i s func t i on )
+k e rne l [ i ] = k e rne l [ i ] / ( 2 . 0 * sigma * sigma *M_PI ) ;
+^
+c l a s s i c e d g e d e t e c t o r s . c : 7 0 : 5 0 : note : each unde c lar ed i d e n t i f i e r i s r epo r t ed only once
+f o r each func t i on i t appear s in
+make : [ edges ] Er ror 1
+\end{verbatim}
+
+\ans This is due a stricter standard compliance in recent versions of gcc, they removed \verb+M_PI+ as standard constant. It passed a long time since first submission and thus gcc versions changed. Thus we opted for defining it ourselves. Now compiles on that ubuntu version.\\
+
+\que This last comment was not answered and not even mentioned in your response letter:
+l62-90, you can precompute $\sigma^2$ and $\sigma^2$ outside of the scopes to avoid unnecessary and inelegant code
+repetition.\\
+
+\ans  Although I agree with the concept, I'm not sure about the benefits of this suggestion. Actually they are two suggestions. The first one has to deal with computational cost, In my experience with optimizing code (which is quite vast), I've learnt not guess before quantifying with a profiler. At the current state of compilers I'm quite sure that computation is already optimized out. On ther other hand, with respect to the code repetition, it is repeated, but only two times, and that repetition improves readability. So I rather keep this in its current form. Anyway, I think this is a very minor issue.\\
+
+\subsection{ Demo review}
+\que I was able to play with the demo and it works fine. I would only ask for a link download all results on the
+result page in order to download an archive of all images.
+
+\ans While I agree with the usefulness of this feature for a single reviewer, I doubt about it when demo goes in production. In that case (see LSD demo) the size of the archive could be considerably big. In addition, I guess this is the kind of feature that should be enabled centrally in the demo system and not in every single demo. Finally, as the demo can change after the review, I suggest to keep it like this and go on discussing the feature, eventually we could add it later.\\
+
+\subsection{ Conclusion}
+This paper is almost ready but the presentation and the compilation problem still make a revision necessary.
+
+
+\chapter{Answers to reviewer \#2}
+
+Dear authors,
+
+\que I took notice of your corrections. I must say that I have mixed feelings
+about them. I will simply state my major sources of concerns here. Please
+have a look at my annotated pdf for more details.\\
+\ans We numbered each of your concerns in the PDF with the tag PDFn, where n is an index and will address them in order in the PDF Comments section.\\
+
+\que On the one hand you did improve the only troublesome theoretical part, that
+was  the Haralick algorithm description. I believe you did a fine job in
+this task, although there are still some minor issues (see annotations).\\
+
+\ans Thanks, we further improved the presentation based on your annotations and a more in depth reading of those sections.\\
+
+\que On the other hand, you did not take any account of the issues I raised
+concerning the experimental part. I therefore recap the comments I made the
+previous time here:
+
+\begin{itemize}
+
+\item lack of in-depth study of the impact of parameters
+
+\item lack of validation or challenging of the claims of original authors
+
+\item  poor explanation of the thickening observed in the Haralick case.
+\end{itemize} 
+
+\ans These concerns are addressed  in the answer corresponding to PDF comment PDF19\\
+
+\que
+I am also concerned with a new issue of importance: It seems like with the
+demo I get very different results  from the one presented in your text. The
+difference are particularly obvious for the haralick filter. See my comment
+in figure 15(f).\\
+
+\ans We had two major problems with this submission. First, there is a bug in the imagemagick convert command in some unixes (I don't currently remember if it is in ubuntu or in mac). This bug made the RGB->grayscale conversion lower the contrast a lot. Thus, we had made the experiements for the paper with the good versions and uploaded the bad versions with the code and the demo. As these algorithms are not contrast invariant, this generated worst results. This is fixed now. The second problem was a bug when the other author made a major refactor of the code. That bug made that the estimation of the k10 coefficient in Haralick was rubbish and thus the result of this algorithm was very bad. This was fixed too.\\
+
+
+\que Furthermore, I am quite disappointed by your refusal to improve your conclusion.\\
+
+\ans In the first review I wasn't sure about the direction you suggested to improve the conclusions, however after giving them a second thoughts and in the light of the new experiments I took notice of them and added an extensive discussion of the results and a considerable number of conclusions. I truly hope you are satisfied now.\\
+
+\section{PDF comments}
+
+\que PDF1 results in\\
+\ans done.\\
+
+\que PDF2  since $b_i$ is a row vector and $f$ a column vector, you should rather use a matrix multiplication notation
+$k_i=b_i f$
+\ans Agreed. Changed in that sense.\\
+
+\que PDF3 english: remove the first in\\
+\ans done.\\
+
+\que PDF4: Much better!\\
+\ans Thanks! Your contributions helped a lot.\\
+
+\que PDF5: I suggest mentioning right away that all this is done to detect ascending edges. For instance: … is to find ascending steps by looking for "negative slopes …"\\
+\ans I Agree, thanks for the suggestion. I phrased it slightly different, because Haralick's work actually never mentions this explicitely, it is just deduced from the way he poses the problem.\\
+
+\que PDF6: english\\
+\ans fixed.\\
+
+\que PDF7: notation issue: $x,y$ are different from the previous sentence. Here they are generic coordinates, while in the previous sentence they were a specific point (the one obtained for $\rho=0$. You could use $x(\rho),y(\rho)$ to remove the ambiguity.\\
+\ans Actually, we explained at first that we will normalize coordinates to be offsets from the central point. Thus from that paragraph and below, we can safely assume that x,y is the point in the line and (0,0) is the center. I rewrote many parts of the section to reflect this.\\
+
+\que PDF8:  would be nice to avoid making a typo in a footnote referring to a typo, unless you want things to get really messy! This should read $f_\alpha^{'}(\rho)\neq 0$.\\
+\ans Oh well! This is a shame, I fixed it. Sorry for that!\\
+
+\que PDF9: The conditions are not mentioned in the previous sentence, so you cannot use "these" to refer to them. You should say, impose the above-mentioned conditions\\
+\ans done.\\
+
+\que PDF10: at or "in a neighborhood of"\\
+\ans it is in a neighborhood. corrected it and added some missing words there\\
+
+\que PDF11: I think you have to remove the positivity constraint. \\
+\ans I don't think so, $\rho$ is always positive because it is the modulus on polar coordinates. In addition, there is no conflict because $C3<0$, thus the equation is solvable.\\
+
+\que PDF12: we substitute $\rho^*$ in this formula'\\
+\ans Here I've chosen an intermediate writing between your proposal and the previous writing. I think it takes both your suggestion and my idea into account.\\
+
+\que PDF13: Why did this change since the previous submission? It used to  be $\frac 1{\sqrt 2}$\\
+\ans Because I think the student author, who originally wrote the paper, wrote this section based on a derived work, but not directly on Haralick's paper. Reviewing this, I found no mention on the original work that the value should be $\frac 1{\sqrt 2}$. It only mentions that it should be smaller than the grid size (quote from page 42, end of section III: "If for some $\rho$, $|\rho|<\rho_0$, where $\rho_0$ is slightly smaller that the length of the side of a pixel...") , and being strict, the minimum grid size is 1 on the horizontal and vertical dimensions, thus $\rho<1$. The only explanation I find for the confusion is that they tried to use half of the diagonal length of a pixel, but that makes no sense to me.\\
+
+\que PDF14: Caption below the figure.\\
+\ans done.\\
+
+\que PDF15: It is\\
+\ans done\\
+
+\que PDF16: The value of $n$ needs to be large enough\\
+\ans done\\
+
+\que PDF17: below the figure as usually done.
+Also redo the figure with larger text.\\
+\ans done, and changed to a vectorial format to improve presentation\\
+
+\que PDF18: Uggly, put the caption below the figure as is usaually done. Also, can you improve the resolution of the figure.\\
+\ans Done.\\
+
+\que PDF19: This section is still very poor. 
+You did not take any of my comments into consideration, not even the merging of small paragraphs into larger ones.
+I therefore recap the comments I made the previous time here (see the original ones for more details)
+1) lack of in-depth study of the impact of parameters\\
+2) lack of validation or challenging of the claims of original authors\\
+3) poor explanation of the thickening observed in the Haralick case.\\
+
+4)I am also concerned with a new issue of importance: It seems like with the demo I get very different results  than the one presented here. The difference are particularly obvious for the haralick filter. See my comment in figure 15(f)\\
+
+\ans I separated these issued in four points in order to properly answer them.\\
+1) We added two sections with figures showing the effect of various thresholds in single images and we also added a saliency map which summarizes the results of each algorithm across all scales. We added examples showing the effect of smoothing for the particular case of Marr. See corrections \ref{results:parameter:scale} and \ref{results:parameter:smooth}\\
+2) We discussed most of the most important claims of the original authors. The only exception were the quantitative results of Haralick. See correction corrections \ref{results:discussion} \\
+3) I will answer this on question PDF22.\\
+
+\que PDF20: This experiment cannot be faithfully reproduced in the demo because figure 12 is not in the input list\\
+
+\ans The square image and the rest of images used in the paper have been added to the demo.\\
+
+\que PDF21: running the same experiment in the demo, I get a much noiser result. See
+\url{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/tmp/7A8BE1B97C40DAA903141EA7906D527E/out_haralick.png}\\
+\ans Thanks for pointing this out, we found a bug due a refactor of the code in previous review. It is now tested and validated.\\
+
+
+\que PDF22: You did not answer my point here. I think I misunderstood you in the first place, but this is because your explanation lacks details. Therefore I am still not satisfied by this explanation. 
+The way you put it is misleading, because you give the impression to think that the fattening of the edge is due to smoothing. If you truly believe this, then I think that you are wrong.
+
+Another way to interpret your explanation is that the spline interpolation if applied to sharp edges (that is when the regularity assumption is at fault) then ringing occurs which creates many duplicated edges. If you agree that this is the right explanation, and that was what you meant in the first place, please improve the formulation of your explanation. And illustrate it graphically.
+
+Otherwise, if you think that the first explanation is the right one, then add an experiment to verify who is right and who is wrong. The experiment could consist in  plotting  the profile of a synthetic interpolated edge. Take a perfect step as input, and see what you get. You should definitely observe ringing!
+
+\ans I tried to explain the phenomenon in detail, however, until now I haven't found a detailed explanation that completely satisfies me. My preliminary tests does not show ringing. I think the degree of the polynomial is too low to show it (only 3 roots).
+The most convincing conjecture I have is due to the way the third condition is relaxed. The idea is to allow for solution that are not exactly at $\rho=0$, thus, we \emph{search} for the solution on an neighborhood. However this search is naive, because we allow as solutions all values where $|\rho|<|\rho_0|$. I see this problem equivalent to finding the zero of a function, if you look for all the x such that $|f(x)<\de|ta$ this will give you a \emph{fat} root.
+
+Anyway, as we have passed all reasonable thresholds for the publication of this paper, and if you don't consider this issue critical, I would propose to leave it as is or remove any explanations that could be missleading. Otherwise, we could ask the editor for his opinion on this subject
+
+\bibliographystyle{unsrt}
+\bibliography{../../tools/journal_list_short,../../tools/references,../../tools/hierarchical_segmentation}
+\end{document}
+
+
+ 
