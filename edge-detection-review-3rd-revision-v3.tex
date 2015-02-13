@@ -1,7 +1,7 @@
 %-------------------------------------------------------------------------------
-% A Review of Classic Edge Detectors - v10
+% A Review of Classic Edge Detectors - v3.3
 % by Haldo Spontón & Juan Cardelino
-% IPOL 2014
+% IPOL 2015
 %-------------------------------------------------------------------------------
 
 \documentclass{ipol}
@@ -32,6 +32,9 @@ $^2$ IIE, UdelaR, Uruguay (\texttt{juanc@fing.edu.uy})}
 \newcounter{mynote}% a new counter for use in margin notes
 \usepackage[multidot]{grffile}
 \usepackage{jfc}
+
+\newcommand{\demourl}{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/}
+
 \begin{document}
 
 \lstset{
@@ -74,18 +77,17 @@ of edge detection algorithms is to find where abrupt changes in the intensity of
 The first family of algorithms reviewed in this work uses the first derivative to find the changes of intensity, 
 such as Sobel, Prewitt and Roberts. In the second reviewed family, second derivatives are used, for example in algorithms 
 like Marr-Hildreth and Haralick. \\
-Results obtained from a qualitative point of view (perceptual) and from a quantitative 
-point of view (number of operations, execution time) are compared, considering different ways to convolve an 
-image with a kernel (step required in some of the algorithms).
+Obtained results are analyzed from a qualitative point of view (perceptual) and from a quantitative 
+point of view (number of operations, execution time), considering different ways to convolve an image with a kernel (step required in some of the algorithms).
 \end{abstract}
 
 %-------------------------------------------------------------------------------
 
 \begin{ipolCode}
-For all the algorithms reviewed, an open source C implementation is provided that can be downloaded from 
+For all the reviewed algorithms, an open source C implementation is provided which can be downloaded from 
 the IPOL publication of this article. An 
-\href{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/}{online demonstration}\footnote{\url{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/}} is also available, where 
-you can test and reproduce our results.
+\href{\demourl}{online demonstration}%\footnote{\url{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/}} 
+is also available, where you can test and reproduce our results.
 \end{ipolCode}
 
 % You can also follow this code project in this \href{git://github.com/haldos/edges.git}{GIT repository} 
@@ -101,12 +103,12 @@ you can test and reproduce our results.
 \section{Introduction}
 \label{sec:intro}
 
-Edge detection is one of the oldest and most basic operations operations in image processing, which is often used as a basic building block for more complex algorithms. The basic idea of edge detection is to detect abrupt changes in image intensity. 
+Edge detection is one of the oldest and most basic operations in image processing, which is often used as a basic building block for more complex algorithms. The basic idea of edge detection is to detect abrupt changes in image intensity. 
 Detecting those changes can be accomplished using first or second order derivatives. \\
 
-In the 70's, edge detection methods were based on using small operators 
+In the 70's, edge detection methods were implemented using small operators 
 (such as Sobel masks), attempting to compute an approximation of the
-first derivative of the image \cite{Gonzalez2007Digital}. Section ~\ref{sec:first} describes such algorithms 
+first derivative of the image \cite{Gonzalez2007Digital}. Section \ref{sec:first} describes such algorithms 
 and serves as an introduction to a more sophisticated 
 analysis of the edge detection process.
 
@@ -122,8 +124,8 @@ proposing a model to locally approximate the image around a point; then, using t
 an approximation to the second derivative of the image can be calculated analytically and 
 finding edges is achieved by imposing a condition over the model parameters. 
 
-\myn{\label{intro:objective}}The objective of this work is to provide reproducible implementations of the abovementioned algorithms, along with a comprehensive quantitative evaluation of the behaviour algorithms with respect to the parameters. Quantitative benchmarks are outside the scope of this work and will be addressed in future work.
-In addition, we will focus on low-level edge detection algorithms, which means that they will output a disconnected an unordered set of edgels (individual pixel facets where boundaries occur). Algorithms that perform edge integration into objects boundaries are of higher level of abstraction and not considered in this work.
+The objective of this work is to provide reproducible implementations of the abovementioned algorithms, along with a comprehensive quantitative evaluation of the behaviour algorithms with respect to the parameters. Quantitative benchmarks are outside the scope of this work and will be addressed in future work.
+In addition, we will focus on low-level edge detection algorithms, which means that they will output a disconnected and unordered set of edgels (individual pixel facets where boundaries occur). Algorithms that perform edge integration into objects boundaries are of higher level of abstraction and not considered in this work.
 
 Along with this paper, a detailed and well commented source code is presented, which 
 implements the described algorithms. In section \ref{sec:appendix1} some common mathematical developments are presented. 
@@ -139,17 +141,17 @@ to compare their performance. Conclusions are detailed in Section \ref{sec:concl
 \section{Algorithms based on the first derivative}
 \label{sec:first}
 
-Algorithms based on first derivatives studied in this paper share a common structure, with the only difference  in the type of filtering used to compute those derivatives. Figure \ref{fig:blockdiagram1} shows a block diagram of that common structure. \\
+The algorithms based on first derivatives studied in this paper share a common structure, which only differs in the type of filtering used to compute those derivatives. Figure \ref{fig:blockdiagram1} shows a block diagram of that common structure. \\
 
-\begin{figure}[!h]
+\begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{blockdiagram1.pdf}
 	\caption{Block diagram of first derivative edge detection algorithms.}
 	\label{fig:blockdiagram1}
 \end{figure}
 
-The usual tool to find the amplitude and direction of changes in 
-intensity of an image $f$ is the gradient operator (denoted as $\nabla$), defined 
+The usual tool to find the magnitude and direction of the
+intensity changes of an image $f$ is the gradient operator (denoted as $\nabla$), defined 
 as the vector
 \begin{equation}
 	\nabla f = 
@@ -177,14 +179,14 @@ orthogonal to the direction $\alpha(x,y)$ of the gradient vector.
 
 To obtain the gradient, the partial derivatives $\partial f/\partial x$ and $\partial f/\partial y$ 
 need to be computed at every pixel in the image. When dealing with digital images, numerical approximations 
-of the partial derivatives are required, calculated in a neighborhood of each point. In the following,
+of these derivatives are computed in a neighborhood of each point. In the following,
 the methods of Roberts, Prewitt and Sobel will be studied, whose main difference is how they perform this calculation. 
 
 %-------------------------------------------------------------------------------
 
 \subsection{The \textit{Roberts} operators}
 
-\myn{\label{first:roberts}}The Roberts edge detector was introduced in 1963 by L.G. Roberts in the context of 3D reconstrution \cite{im_proc:segmentation:roberts:1963:boundary_extraction}, and it was based on computing the first derivative of the image. The most usual approach to approximate the first derivative is to use a the first order Taylor expansion with a small value of $h$. Thus $f'(x)$ is computed as
+\myn{\label{first:roberts}}The Roberts edge detector was introduced in 1963 by L.G. Roberts in the context of 3D reconstrution \cite{im_proc:segmentation:roberts:1963:boundary_extraction}, and it was based on the computation of the first derivative of the image. The most usual approach to approximate the first derivative is to use a the first order Taylor expansion with a small value of $h$. Thus $f'(x)$ is computed as
 \begin{equation}
 	f'(x) \simeq \frac{f(x+h) - f(x)}{h}.\\
 \end{equation}
@@ -211,7 +213,7 @@ usual to scale the mask values, in order to have gain equal to $1$. \\
 
 %% VER NORMALIZACION
 
-\begin{figure}[2][!h]
+\begin{figure}[h!]
 	\centering
 	\begin{squarecells}{1}
 		-1   \nline
@@ -225,7 +227,7 @@ usual to scale the mask values, in order to have gain equal to $1$. \\
 	\label{fig:1dmasks}
 \end{figure}
 
-\begin{figure}[1][!h]
+\begin{figure}[h!]
 	\centering
 	\begin{squarecells}{2}
 		-1 &  0  \nline
@@ -241,7 +243,7 @@ usual to scale the mask values, in order to have gain equal to $1$. \\
 \end{figure}
 
 Figure \ref{fig:1dmasks} shows the simplest way to compute derivatives, but Roberts \cite{im_proc:segmentation:roberts:1963:boundary_extraction} proposes
-to compute them as shown in Figure \ref{fig:roberts}. In order to use the same convolution code for all algorithms, our implementation uses $3\times3$ matrices, adding a row and a column of zeros to the matrices in Figure \ref{fig:roberts}, what produces the same result.
+to compute them as shown in Figure \ref{fig:roberts}. In order to use the same convolution code for all algorithms, our implementation uses $3\times3$ matrices, adding a row and a column of zeros to the matrices in Figure \ref{fig:roberts}, which produces the same result.
 
 %-------------------------------------------------------------------------------
 
@@ -254,14 +256,14 @@ Having symmetrical edges is a desirable property and can only be achieved with o
 of them being the 3x3. These masks provide more information to find the direction of the edges, because they take 
 into account information on opposite sides of the central point. 
 
-The simplest digital approximation to the partial derivatives using masks of size $3\times3$ are obtained 
+The simplest digital approximation of the partial derivatives using masks of size $3\times3$ is obtained 
 by taking the difference between the third and first rows (or columns) of the $3\times3$ region. The
 difference between the third and first rows approximates the derivative in the x-direction, and 
 the difference between the third and first columns approximates the derivative in the y-direction.
-These approximations can be implemented by filtering the image with the two masks in Figure \ref{fig:prewitt}.
+These approximations can be implemented by filtering the image with the two masks shown in Figure \ref{fig:prewitt}.
 These masks are called \textit{Prewitt operators} \cite{im_proc:segmentation:prewitt:1970:object_enhancement}. 
 
-\begin{figure}[1][!h]
+\begin{figure}[h!]
 	\centering
 	\begin{squarecells}{3}
 		$-\frac{1}{3}$ 	& $-\frac{1}{3}$ 	& $-\frac{1}{3}$	\nline
@@ -279,18 +281,15 @@ These masks are called \textit{Prewitt operators} \cite{im_proc:segmentation:pre
 \end{figure}
 
 The left mask can be constructed (up to a scale factor) as the convolution of two filters: a vertical derivative 
-$[-1\ 0\ 1]$ and an horizontal moving average $[1\ 1\ 1]^T$. The same reasoning could be applied to the right mask. Hence, these operators can be interpreted as the consecutive application of an horizontal low pass filter with a vertical derivative filter. Thus, they show smoothing properties in the direction orthogonal to the gradient.
+$[-1\ 0\ 1]^T$ and an horizontal moving average $[1\ 1\ 1]$. The same reasoning could be applied to the right mask. Hence, these operators can be interpreted as the consecutive application of an horizontal low pass filter with a vertical derivative filter, and viceversa. Thus, they show smoothing properties in the direction orthogonal to the gradient.
 
 %-------------------------------------------------------------------------------
 
 \subsection{The \textit{Sobel} operators}\label{sec:first:sobel}
 
-A slight variation of the Prewitt operators which use more weight on the central coefficients of the 
-difference. It can be shown that using more weight in the center location provides better image smoothing. This
-variation is implemented using masks shown in Figure \ref{fig:sobel}. These operators are called 
-\textit{Sobel operators}.  
+\textit{Sobel operators} are a slight variation of the Prewitt operators which use more weight on the central coefficients of the masks. It can be shown that using more weight in the center location provides better image smoothing. This variation is implemented using masks shown in Figure \ref{fig:sobel}. 
 
-\begin{figure}[1][!h]
+\begin{figure}[h!]
 	\centering
 	\begin{squarecells}{3}
 		$-\frac{1}{4}$ 	& $-\frac{1}{2}$ 	& $-\frac{1}{4}$	\nline
@@ -307,34 +306,32 @@ variation is implemented using masks shown in Figure \ref{fig:sobel}. These oper
 	\label{fig:sobel}
 \end{figure}
 
-Sobel masks can be seen (up to a  scale factor) as the convolution of a horizontal derivation mask 
-$[-1\ 0\ 1]$ with a vertical smoothing filter $[1\ 2\ 1]$ (closer to a Gaussian response than Prewitt), and vice versa. 
+Sobel masks can be seen (up to a  scale factor) as the convolution of a vertical derivation mask 
+$[-1\ 0\ 1]^T$ with an horizontal smoothing filter $[1\ 2\ 1]$ (closer to a Gaussian response than Prewitt), and vice versa. 
 Hence, these operators have better smoothing properties, as mentioned in the preceding paragraph. \\
 
-The computational cost of applying Prewitt and Sobel masks is exactly the same. Thus, it is preferable to 
-use Sobel operators, because edges are better localized, and their filter are also less aliased, because of the weighted shape of $[1\ 2\ 1]$.
+The computational cost of applying Prewitt and Sobel masks is exactly the same. Thus, it is preferable to use Sobel operators, because edges are better localized, and its filters are also less aliased, because of the weighted shape of the kernel.
 
 %-------------------------------------------------------------------------------
 
 \subsection{Computation of the edges}\label{sec:first:sobel:computation}
 
-As mentioned before, edges can be seen as abrupt changes in intensity, i.e. higher values of gradient.
+As mentioned before, edges can be seen as abrupt changes in intensity, which correspond high values of the gradient.
 An example of this behavior is shown in Figure \ref{fig:profiles3d}, where gradient was computed using Sobel operators. 
 
 Then, once the respective operators are applied, an approximation of the gradient (stored in two matrices) 
 is obtained, containing the approximation of the partial derivatives $f_x$ and $f_y$. Gradient magnitude 
 image $M$ is calculated using the equation \ref{eq:mag_alpha} (Figure \ref{fig:profiles3d-c}). 
 
-Finally, the edges image is obtained by thresholding the gradient magnitude image, i.e. for pixel a at position $i,j$ in the image compute
+Finally, the edges image is obtained by thresholding the gradient magnitude image, i.e. for a pixel at position $i,j$ in the image the algorithm computes
 \begin{equation*}
 	\mbox{edges}[i,j] = \begin{cases} 1,& \mbox{if}\ M[i,j]\geq\mbox{th} \\
 									0,& \mbox{if}\ M[i,j]<\mbox{th}
 					  \end{cases}
 \end{equation*}
-where $\mbox{th}$ is the threshold. A black and white image is obtained, in which edge points are indicated in white (see Figure \ref{fig:thresholding}). 
-It is noted that different thresholds lead to different results. Thicker or more edges for smaller thresholds, fewer edges 
-for larger thresholds. This threshold, and the others mentioned below, are defined as a percentage of the maximum value 
-of the gradient image. The advantage of this is to adapt the threshold to the dynamic range of the image. 
+where $\emph{th}$ is the threshold. A black and white image is obtained, in which edge points are indicated in white (see Figure \ref{fig:thresholding}). 
+It is noted that different thresholds lead to different results: thicker or more edges for smaller thresholds, fewer and sparser edges for larger thresholds. This threshold, and the others mentioned below, are defined as a percentage of the maximum value 
+of the gradient image. The advantage of this approach is to adapt the threshold to the dynamic range of the image. 
 Therefore, the parameter $threshold$ in the algorithms takes values ​​between $0$ and $1$.
 
 
@@ -367,7 +364,7 @@ Therefore, the parameter $threshold$ in the algorithms takes values ​​betwee
 
 \subsection{Pseudo-code}
 
-The pseudo-code of implemented algorithms is shown in Algorithm \ref{algo:fded}.
+The pseudo-code of the implemented algorithms is shown in Algorithm \ref{algo:fded}.
 
 \clearpage
 
@@ -375,8 +372,7 @@ The pseudo-code of implemented algorithms is shown in Algorithm \ref{algo:fded}.
 \caption{First derivative edge detection algorithms.}
 \label{algo:fded}
 \begin{algorithmic}[1]
-\REQUIRE input image, threshold $th$.
-\STATE $im \leftarrow$ input image
+\REQUIRE $im$ input image, threshold $th$.
 \STATE Define $operator_x$ and $operator_y$ \COMMENT{Roberts, Prewitt or Sobel.}
 \STATE $g_x \leftarrow$ convolution($im$,$operator_x$)
 \STATE $g_y \leftarrow$ convolution($im$,$operator_y$)
@@ -405,10 +401,10 @@ The pseudo-code of implemented algorithms is shown in Algorithm \ref{algo:fded}.
 
 The edge detection methods discussed in the previous section are simply based on filtering the 
 image with different masks, without taking into account the characteristics of the edges or 
-noise in the image. 
+the noise in the image. 
 
-\myn{\label{second:references}}The two algorithms presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:84:digital_step} and Haralick \cite{bb20239}) 
-are based on the second derivative of the image, and both take steps to reduce noise before 
+Both algorithms presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:84:digital_step} and Haralick \cite{bb20239}) 
+are based on the second derivative of the image, and take steps to reduce noise before 
 detecting edges in the image.
 
 %-------------------------------------------------------------------------------
@@ -417,12 +413,10 @@ detecting edges in the image.
 
 The Marr-Hildreth algorithm is a method of detecting edges in digital 
 images. It is based on finding zero crossing points of the second derivative
-of the image. This can be done in several ways. Two different ways of doing 
-this are implemented in this work (see block diagram in Figure 
-\ref{fig:blockdiagram2}): convolving the image with a Gaussian kernel and then 
+of the image. This computation can be done in several ways, but in this work we implement two of these ways  (see block diagram in Figure \ref{fig:blockdiagram2}): convolving the image with a Gaussian kernel and then 
 approximating the second derivative (Laplacian) with a 3x3 kernel, or 
 convolving the image with a kernel calculated as the Laplacian of a 
-Gaussian function. There are more ways to do so, for example, using 
+Gaussian function. There are more ways to do perform the same tasks, for example, using 
 recursive Gaussian filters \cite{Deriche1993Recursively}. 
 
 \begin{figure}[!b]
@@ -443,16 +437,16 @@ The algorithm is divided in two steps, each one described later:
 	\item Search of zero crossing points in the filtered image.
 \end{enumerate}
 
-Some auxiliary functions are needed such as Gaussian kernel and Laplacian of a Gaussian 
+IN order to implement this algorithm some auxiliary functions are needed, such as Gaussian kernel and Laplacian of a Gaussian 
 kernel generation, and 2-D convolution of an image with a given kernel, 
-with different boundary conditions. These operations will be discussed 
+using different boundary conditions. These operations will be discussed 
 in detail in section \ref{sec:appendix1}.
 
 %-------------------------------------------------------------------------------
 
 \subsubsection{Gaussian and LoG kernels}
 
-The Marr-Hildreth algorithm consists on convolving the input image $f(x,y)$ with a LoG kernel;
+The main idea of Marr-Hildreth's algorithm is to convolve the input image $f(x,y)$ with a LoG kernel;
 \begin{equation}\label{eq:log}
   g(x,y) = [\nabla^2G(x,y)]\star f(x,y), 
 \end{equation}
@@ -463,7 +457,7 @@ Because these are linear processes, equation \ref{eq:log} can be written also as
 \end{equation}
 indicating that the image can be smoothed with a Gaussian filter first, and then compute the Laplacian of the result\footnote{The difference between these approaches lies in the compromise between the accuracy in the calculation and the computational cost (see Section \ref{kernelcomparison}).} .
 
-Then, generation of both Gaussian and LoG kernels is required (see section \ref{sec:appendix1}).\\
+Then, the algorithm requires the generation of both Gaussian and LoG kernels (see section \ref{sec:appendix1}).\\
 
 The Marr-Hildreth edge-detection algorithm may be summarized as follows:
 \begin{enumerate}
@@ -489,7 +483,7 @@ The Marr-Hildreth edge-detection algorithm may be summarized as follows:
 
 A zero crossing at pixel $p$ implies that the signs of at least two opposite neighboring pixels are 
 different. There are four cases to test: left/right, up/down, and the two diagonals. In this case 
-a threshold is used, so that not only the signs of the opposite pixels must differ, also their 
+two conditions must hold: first, the signs of the opposite pixels must differ, and second, their 
 difference in absolute value must be greater than a certain threshold. 
 
 The zero-crossing threshold ($th_{ZC}$) is given as a percentage of the maximum value $max_L$ of the Laplacian 
@@ -517,8 +511,7 @@ Then a pixel $p$ is considered as edge pixel if any of the following conditions 
 
 Zero crossing detection is the key feature of the Marr-Hildreth edge detection method. The technique 
 presented in the previous paragraph is attractive for its simplicity of implementation and its low 
-computational cost. In general it is a technique that yields good results, but if more precision in 
-finding the zero crossings is needed, more advanced methods for finding zero crossings with subpixel 
+computational cost. In general it yields good results, but for applications that require accurate edge localization, more advanced methods for finding zero crossings with subpixel 
 accuracy could be used (e.g.\ marching squares \cite{comp_graph:surf_recon:lorensen:87:marching_cubes}).
 
 %-------------------------------------------------------------------------------
@@ -531,8 +524,7 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 \caption{Marr-Hildreth edge detection algorithm.}
 \label{algo:mh}
 \begin{algorithmic}[1]
-\REQUIRE input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
-\STATE $im \leftarrow$ input image
+\REQUIRE $im$ input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
 \IF{Gaussian kernel}
 	\STATE Define Laplacian operator $laplacian$
 	\STATE $im_{LAPL} \leftarrow$ convolution($im$,$laplacian$)
@@ -564,8 +556,8 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 
 \subsection{The \textit{Haralick} algorithm}
 
-In this section the original work of Haralick \cite{bb20239} on edge detection is presented in detail.
-The main idea behind this algorithm is identical to that of the previous method: find zeros in 
+In this section we present a detailed description of Haralick's original work \cite{bb20239}.
+The main idea of this algorithm is identical to that of the previous method: find zeros in 
 the second derivative of the image. In this method, however, the input image is smoothly approximated through local bi-cubic
 polynomial fitting. Then, when calculating the second derivative analytically, it is possible to find 
 an equivalent expression to find the zeros of the second derivative of the polynomial as a function of 
@@ -579,7 +571,7 @@ its parameters.%\footnote{This implementation is slightly different from the tra
 \subsubsection{Bi-cubic polynomial fitting}
 \label{sec:bicubic}
 
-Here, the interpolation method used in the original work of Haralick is presented, although there are other options to do this \cite{getreuer}. 
+Here, we present the interpolation method used in the original work of Haralick, although there are other options to do this \cite{getreuer}. 
 
 \myn{\label{second:haralick:fitting:statement}} The surrounding neighborhood of a point $(x_0,y_0)$ in the image $f$ is approximated using the following bi-cubic polynomial
 \begin{align}
@@ -588,7 +580,7 @@ Here, the interpolation method used in the original work of Haralick is presente
 	 k_6(y-y_0) ^2 + k_7(x-x_0)^3 + k_8(x-x_0)^2(y-y_0)  + k_9(x-x_0)(y-y_0) ^2 + k_{10}(y-y_0) ^3 \\
 \end{align}
 To solve this fitting problem, it is necessary to take more neighbors than coefficients to be adjusted. As there are 10 coefficients to compute, the smallest neighborhood of odd size that accomplishes this has size $5\times5$. Having $10$ coefficients and $25$ data 
-points leads to an overdetermined system, which can be solved using least squares or any other fitting technique.\\
+points leads to an overdetermined system, which can be solved using least squares or any other suitable fitting technique.\\
 
 In Haralick's work, this polynomial approximation is expressed in a local coordinate system centered on each pixel. In this way, the center of the neighboorhood $(x_0,y_0)$ is always $(0,0)$, and the coordinates $(x, y)$ are offsets from this center point (e.g. in a neighborhood of size $5\times5$, x and y take values between -2 and +2). Thus, the expression of the polynomial is\\
 
@@ -679,7 +671,7 @@ For each coefficient ($i$ from $1$ to $10$),
 	k_i = b_{i,1}f_1 + b_{i,2}f_2 + b_{i,3}f_3 + \hdots + b_{i,25}f_{25} \ \ \Rightarrow \ \ \mathbf{k_i} = \mathbf{b_i}\mathbf{f} ,\\
 \end{equation}
 
-where $b_i$ is the vector containing the $i-th$ row of $B$, i.e.
+where $\mathbf{b_i}$ is the vector containing the $i-th$ row of $B$, i.e.
 
 \begin{equation}
 	\label{eq:b_i_v}
@@ -687,7 +679,7 @@ where $b_i$ is the vector containing the $i-th$ row of $B$, i.e.
 					\end{bmatrix}.\\
 \end{equation}
 
-Let us rearrange $b_i$ as a $5\times5$ matrix and denote it by $\mathbf{mask_i}$ as follows
+Let us rearrange $\mathbf{b_i}$ as a $5\times5$ matrix and denote it by $\mathbf{mask_i}$ as follows
 \begin{equation}
 	\label{eq:b_i}
 	\mathbf{mask_i} = \begin{bmatrix}	b_{i,1}		& b_{i,2}	& \hdots	& b_{i,5}	\\
@@ -713,7 +705,7 @@ As we expressed the approximation in a local coordinate system, the coefficients
 \subsubsection{Analytical calculation of the second derivative}
 \label{sec:secderivative}
 
-The main idea of Haralick's algorithm, as stated in the original work, is to find "negative sloped zero crossings of the second derivative". \myn{\label{second:haralick:analytical:def}} This means that it is actually looking for ascending step edges. According to Haralick's definition, a pixel will lie on such an edge if the following three conditions hold\footnote{Please note that there is a typo in Haralick's original paper. The statement of the idea is presented at the beggining of Section III, in the first column of page 42. The three conditions are presented at the end of the same section, in the second column. There it reads $f''_{\alpha}(\rho)<0$, $f''_{\alpha}(\rho)=0$ and $f'_{\alpha}(\rho)\neq 0$. Clearly, the first and second conditions can't be true at the same time, thus the first one should be $f'''_{\alpha}(\rho)<0$.}:
+The main idea of Haralick's algorithm, as stated in the original work, is to find "negative sloped zero crossings of the second derivative". This means that it is actually looking for ascending step edges. According to Haralick's definition, a pixel will lie on such an edge if the following three conditions hold\footnote{Please note that there is a typo in Haralick's original paper. The statement of the idea is presented at the beggining of Section III, in the first column of page 42. The three conditions are presented at the end of the same section, in the second column. There it reads $f''_{\alpha}(\rho)<0$, $f''_{\alpha}(\rho)=0$ and $f'_{\alpha}(\rho)\neq 0$. Clearly, the first and second conditions can't be true at the same time, thus the first one should be $f'''_{\alpha}(\rho)<0$.}:
 
 \begin{enumerate}
 \item the first derivative is non zero.
@@ -818,7 +810,7 @@ The Haralick edge detection algorithm is summarized in the following 4 steps:
 	\item For each pixel in the image, find the coefficients $k_1 \hdots k_{10}$, as shown in section \ref{sec:bicubic}.
 	\item Compute $\sin(\theta)$ and $\cos(\theta)$ (equations \ref{eq:sincos}).
 	\item Compute $C_2$ and $C_3$ (equations \ref{eq:c}).
-	\item If $\left| \frac{C_2}{3C_3} \right| < \rho_0$ and $C_3 < 0$, then that point is an edge point.
+	\item If $\left| \frac{C_2}{3C_3} \right| < \rho_0$ and $C_3 < 0$, then the candidate is an edge point.
 \end{enumerate}
 
 %-------------------------------------------------------------------------------
@@ -831,8 +823,7 @@ The pseudo-code of Haralick's algorithm is shown in Algorithm \ref{algo:haralick
 \caption{Haralick edge detection algorithm.}
 \label{algo:haralick}
 \begin{algorithmic}[1]
-\REQUIRE input image (width $w$, height $h$), edge point condition threshold $\rho_0$.
-\STATE $im \leftarrow$ input image
+\REQUIRE $im$ input image (width $w$, height $h$), edge point condition threshold $\rho_0$.
 \STATE Define the ten $5\times5$ masks ($mask_1\dots mask_{10}$) used to determine coefficients $k_1$ to $k_{10}$ \COMMENT{See Table \ref{table:b_i}.}
 \FORALL{pixel $i$ in image $im$}
 	\STATE $neighbors \leftarrow$ $5\times5$ neighborhood of pixel $i$ in image $im$
@@ -988,8 +979,8 @@ be $29$.
 
 \subsection{Convolution}
 
-When making a convolution, it is necessary to define the boundary conditions used to compute it near the edges of the image, and to get a valid output the same size as input image. In this paper, 
-two methods were implemented: zero-padding and boundary reflection. Zero-padding completes the borders of the image with valued pixels. Reflection completes those pixels with the corresponding symmetric pixel value  relative to the edge of the image. Direct convolution is not the only way of filtering an image with a kernel. There are other methods such as FFT convolution or recursive filtering.%\footnote{Implementations of these methods can be found in the \href{https://tools.ipol.im/wiki/author/code/hatchery/}{IPOL Code Hatchery}.}.
+When performing a convolution, it is necessary to define the boundary conditions used to compute it near the edges of the image, and to get a valid output of the same size as input image. In this paper, 
+two methods were implemented: zero-padding and boundary reflection. Zero-padding completes the borders of the image with zero valued pixels. Reflection completes those pixels with the corresponding symmetric pixel value  relative to the edge of the image. Direct convolution is not the only way of filtering an image with a kernel, there are other methods such as FFT convolution or recursive filtering.%\footnote{Implementations of these methods can be found in the \href{https://tools.ipol.im/wiki/author/code/hatchery/}{IPOL Code Hatchery}.}.
 
 %-------------------------------------------------------------------------------
 
@@ -1032,7 +1023,7 @@ In this simple case, the first derivative edge detection algorithms run better a
 \begin{figure}[t!]
 	\centering
 	\includegraphics[width=0.48\textwidth]{results/molino_bw.png}
-	\caption{Test image 2: windmill (1000$\times$563 pixels).}
+	\caption{Test image 2: Windmill (1000$\times$563 pixels).}
 	\label{fig:original2}
 \end{figure}
 
@@ -1052,7 +1043,7 @@ The results of the first derivative edge detection algorithms are shown Figures 
 		\hline
 	\end{tabular}
 	\end{center}
-	\caption{Execution time of the algorithms (including I/O) using Figure \ref{fig:original2} as input image (1000$\times$563 pixels, 3 channels).}
+	\caption{Execution time of the algorithms (including I/O) using the \emph{Windmill} image from Figure \ref{fig:original2} as input image (1000$\times$563 pixels, 3 channels).}
 	\label{exectime2}
 \end{table}
 
@@ -1087,7 +1078,7 @@ Another observation is that edges detected by Haralick's algorithm appear to be 
 \subsection{Further examples}
 \label{sec:examples}
 
-Further examples obtained with the implemented algorithms are shown in Figures \ref{fig:example1} and \ref{fig:example2}. More examples can be found in the online \href{http://dev.ipol.im/~haldos/ipol_demo/xxx_edges/}{demo}.
+Further examples obtained with the implemented algorithms are shown in Figures \ref{fig:example1} and \ref{fig:example2}. More examples can be found in the online \href{\demourl}{demo}.
 
 \begin{figure}[h!]
 	\centering
@@ -1112,8 +1103,8 @@ Further examples obtained with the implemented algorithms are shown in Figures \
 
 Some observations: 
 \begin{itemize}
-	\item The first derivative algorithms, although they work properly and run fast, have some problems like discontinuity of the edges. They are also very sensitive to noise, which make them detect spurious edges (More sophisticated methods help to avoid and improve this, e.g. Canny edge detector \cite{Canny1986}). \\
-	\item The Marr-Hildreth algorithm (in its two versions) achieved interesting results in the edge detail. This algorithm provides a first attempt to obtain regular edges, because of the filtering with a Gaussian kernel. This behavior can be seen in Lena's hair (Figure \ref{fig:example1}), or inside the oranges (example \ref{fig:example2}). \\
+	\item The first derivative algorithms, although they work properly and run fast, have some problems like discontinuity of the edges. They are also very sensitive to noise, which make them detect spurious edges (More sophisticated methods help to improve this, e.g. Canny edge detector \cite{Canny1986}). \\
+	\item The Marr-Hildreth algorithm (in its two versions) achieved interesting results regarding edge details. This algorithm provides a first attempt to obtain regular edges, because of the filtering with a Gaussian kernel. This behavior can be seen in Lena's hair (Figure \ref{fig:example1}), or inside the oranges (example \ref{fig:example2}). \\
 	\item As mentioned earlier, Haralick's algorithm is the first to assume greater regularity of the image in the neighborhood of a pixel (third order). This causes thicker edges, as shown in both examples. But, note that some edges are only detected with this algorithm, e.g. the lower edges of the oranges, which are in the shadow, in Figure \ref{fig:example2}. These edges are quite smooth, so that the Haralick model is well suited to them, and they do not represent an abrupt change in the intensity to be detected by other methods. \\
 \end{itemize}
 
@@ -1143,12 +1134,12 @@ Some observations:
 In Figure \ref{fig:results:parameters:roberts:saliency} we show a summary of the threshold's behavior for this algorithm, in the whole range of possible values $[0,1]$. For each image, this information is summarized in a saliency map which serves to assess the quality of the obtained hierarchical set of edges.
 The saliency map is constructed by sampling the scale range (using steps of $0.05$) and computing the edge map corresponding for each scale. Then each edge is labeled with its scale of disappearance $\alpha^-$, which is the maximum scale at which an edge is present in the output edge map. This scale is drawn with a \emph{hot} colormap (black, red, yellow, white). Intuitively, this means that 'hotter' edges last longer across scales and thus are more meaningful.
 These results show two important properties. First, the obtained stack of edges are causal, i.e. as the scale parameter increases the edge map gets coarser. This can be verified by observing the values of $\alpha^-$ assigned to each contour.
-If a contour has a high $\alpha^-$ value it means that it will survive for a long time in the merging process. On the other hand, small values mean that it will be removed at early stages.
+If a contour has a high $\alpha^-$ value it means that it will survive for a long time in the detection process. On the other hand, small values mean that it will be removed at early stages.
 As the figure shows, the highest values of $\alpha^-$ are assigned to the most coarser segmentation.
 And second, the stack of edges is geometrically accurate, i.e. the borders present in each scale are a strict subset of the previous (finer) scale. If they were not included they will be seen as new contours in the saliency map.
-These results show empirical evidence that the obtained hierarchy holds the strong causality property, introduced by Morel and Solimini \cite{book:morel:95:variational_pde}.
+These results show empirical evidence that the obtained hierarchy holds the strong causality property introduced by Morel and Solimini in \cite{book:morel:95:variational_pde}.
 
-In Figures \ref{fig:results:parameters:first:saliency:a} and \ref{fig:results:parameters:first:saliency:b} we compare the three first derivative algorithms by means of their saliency maps. As the results show, they all present a similiar behavior, however the are small differences in the results of Roberts vs the other two algorithms. For example, edges surrounding the segments of the orange are better defined, because they have more relative weight than other spurious borders. This is explained by the smoothing introduced by Prewitt and Sobel masks explained in Sections \ref{sec:first:sobel} and \ref{sec:first:sobel}, which removes theses spurious edges and thus improves the meaningfulness of the stable ones.
+In Figures \ref{fig:results:parameters:first:saliency:a} and \ref{fig:results:parameters:first:saliency:b} we compare the three first derivative algorithms by means of their saliency maps. As the results show, they all present a similiar behavior, however the are small differences in the results of Roberts vs the other two algorithms. For example in the latter, edges surrounding the segments of the orange are better defined, because they have more relative weight than other spurious borders. This is explained by the smoothing introduced by Prewitt and Sobel masks explained in Sections \ref{sec:first:sobel} and \ref{sec:first:sobel}, which removes theses spurious edges and thus improves the meaningfulness of the stable ones.
 
 In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:parameters:second:saliency:b} we compare the second derivative algorithms by means of their saliency maps. In the first place, we obtain very similar hierarchies for both Marr-Hildreth implementations, which validates the affirmation that the difference is merely about computational effort if both are correctly implemented. However, the LoG implementation seems to give slightly better results, this is probably because it provides a more accurate discretization of the differential operators than the Gaussian approach. See for instance the clothing sticks in Figure \ref{fig:results:parameters:second:saliency:b}, where the boundaries in the LoG case seem better defined.
 
@@ -1161,7 +1152,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \figRowMultiscaleHHH{test}{roberts}{0002}
 \figRowMultiscaleHHH{test}{roberts}{0003}
 \figRowMultiscaleHHH{test}{roberts}{0004}
-  \caption{Results of the \textit{Roberts} algorithm our sample images. For each example we show the original image on the left and the results corresponding to parameter values of 0.1, 0.2 and 0.3 respectively.}
+  \caption{Results of the \textit{Roberts} algorithm on our sample images. For each example we show the original image on the left and the results corresponding to parameter values of 0.1, 0.2 and 0.3 respectively.}
   \label{fig:results:parameters:roberts:parameter}
 %\vskip \espaciotabla
 \end{figure*}
@@ -1185,7 +1176,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \figRowMultiscaleHH{test}{0003}
 \figRowMultiscaleHH{test}{0004}
 \figRowMultiscaleHH{test}{0005}
-  \caption{Results of the first derivative algorithms our sample images. For each example we show the original image on the left and the saliency map of each algorithm (Roberts, Sobel, Prewitt) respectively.
+  \caption{Results of the first derivative algorithms on our sample images. For each example we show the original image on the left and the saliency map of each algorithm (Roberts, Sobel, Prewitt) respectively.
   The value of each contour corresponds to the scale of disappearance  $\alpha^-$ of each region.}
   \label{fig:results:parameters:first:saliency:a}
 %\vskip \espaciotabla
@@ -1196,7 +1187,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \figRowMultiscaleHH{test}{0006}
 \figRowMultiscaleHH{test}{0007}
 \figRowMultiscaleHH{test}{0008}
-  \caption{Results of the first derivative algorithms our sample images. For each example we show the original image on the left and a saliency map of each algorithm (Roberts, Sobel, Prewitt) respectively.
+  \caption{Results of the first derivative algorithms on our sample images. For each example we show the original image on the left and a saliency map of each algorithm (Roberts, Sobel, Prewitt) respectively.
   The value of each contour corresponds to the scale of disappearance  $\alpha^-$ of each region.}
   \label{fig:results:parameters:first:saliency:b}
 %\vskip \espaciotabla
@@ -1208,7 +1199,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \figRowMultiscaleHHHH{test}{0003}
 \figRowMultiscaleHHHH{test}{0004}
 \figRowMultiscaleHHHH{test}{0005}
-  \caption{Results of the second derivative algorithms our sample images. For each example we show the original image on the left and a saliency map of each algorithm (Marr-Hildreth-Gaussian, Marr-Hildreth-Log, Haralick) respectively.
+  \caption{Results of the second derivative algorithms on our sample images. For each example we show the original image on the left and a saliency map of each algorithm (Marr-Hildreth-Gaussian, Marr-Hildreth-Log, Haralick) respectively.
   The value of each contour corresponds to the scale of disappearance  $\alpha^-$ of each region.}
   \label{fig:results:parameters:second:saliency:a}
 %\vskip \espaciotabla
@@ -1219,7 +1210,7 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \figRowMultiscaleHHHH{test}{0006}
 \figRowMultiscaleHHHH{test}{0007}
 \figRowMultiscaleHHHH{test}{0008}
-  \caption{Results of the second derivative algorithms our sample images. For each example we show the original image on the left and the saliency map of each algorithm (Marr-Hildreth-Gaussian, Marr-Hildreth-Log, Haralick) respectively.
+  \caption{Results of the second derivative algorithms on our sample images. For each example we show the original image on the left and the saliency map of each algorithm (Marr-Hildreth-Gaussian, Marr-Hildreth-Log, Haralick) respectively.
   The value of each contour corresponds to the scale of disappearance  $\alpha^-$ of each region.}
   \label{fig:results:parameters:second:saliency:b}
 %\vskip \espaciotabla
@@ -1229,16 +1220,16 @@ In Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:p
 \myn{\label{results:parameter:smooth}}As we stated in previous section, all the reviewed algorithms share a scale parameter (threshold), however, the Marr-Hildreth Algorithm also has a smoothing step which adds an additional parameter $\sigma$, which controls the amount of regularization. In Figure \ref{fig:results:parameters:marr:sigma} we show the results using different  $\sigma$ values. As sigma increases more spurious edges are removed and the boundaries of the objects look smoother. However, if we keep increasing it we start removing meaningful edges (see the cloth band on the hat of Lena).
 
 \subsection{Discussion}
-\myn{\label{results:discussion}}In this section we will discuss the obtained results and contrast them with the claims made by the original authors.
+In this section we will discuss the obtained results and contrast them with the claims made by the original authors.
 In the case of the first derivative algorithms, they are very simple and the claims made by the original authors are straight forward to verify. The Roberts algorithm was presented in his Phd Thesis (\cite{im_proc:segmentation:roberts:1963:boundary_extraction}, Chapter IV ) as a step of a more complex 3D reconstruction system. For this reason, only qualitative results are shown on few images. The effects of the parameter or the discretization is not validated. The only observation made in that work is the presence of spurious edges due to noise (pg. 31), which are removed by a line fitting postprocessing.
-With respect to \emph{Prewitt} and \emph{Sobel} operators, they are arise from an in-depth study of different ways to discretize the gradient. In \cite{im_proc:segmentation:prewitt:1970:object_enhancement} these discretizations are discussed and compared qualitatively. In this work we tested only two of the possible discretizations, and we obtained very similar results using both operators. On the other hand, they show better performance that the \emph{Roberts} mask;
+With respect to \emph{Prewitt} and \emph{Sobel} operators, they arise from an in-depth study of different ways to discretize the gradient. In \cite{im_proc:segmentation:prewitt:1970:object_enhancement} these discretizations are discussed and compared qualitatively. In this work we tested only two of the possible discretizations, and we obtained very similar results using both operators. On the other hand, they show better performance that the \emph{Roberts} mask;
 
 In Haralick's work, there is an interesting quantitative validation over a synthetic grid. On that evaluation, he shows results of noise sensitivity as well as comparative performance with Prewitt operators. As in this work we didn't focus on quantitative benchmarks, we didn't reproduce those results.
 
-The obtained results validate the original claims made by Marr \cite{segm:edge_region:marr:84:digital_step}, where he made the following observations:
+Regarding the Marr-Hildreth algorithm, the obtained results validate the original claims made by Marr \cite{segm:edge_region:marr:84:digital_step}, where he made the following observations:
 \begin{itemize}
 \item "A major difficulty with natural images is that changes can and do occur over a
-wide range of scales (Marr 1976a, b). No single filter can be optimal simultaneously at all scales, so it follows that one should seek a way of dealing separately with the changes occurring at different scales. ". 
+wide range of scales (Marr 1976a, b). No single filter can be optimal simultaneously at all scales, so it follows that one should seek a way of dealing separately with the changes occurring at different scales. " 
 
 \item "The reason is that strict bandlimiting gives rise to sidelobes in the spatial spatial filter, and the consequence of these is that, in the zero-crossing image, strong intensity changes give rise to echoes as well as to the directly corresponding zero-crossings..."
 
@@ -1247,7 +1238,7 @@ wide range of scales (Marr 1976a, b). No single filter can be optimal simultaneo
 
 The first claim is validated in our experiments by varying the $\sigma$ parameter, where we observed that no single value will allow us to obtain all the meaningful edges. The same reasoning applies to the zero crossing threshold $t_{ZC}$ .
 
-The second observation is evidenced by the halos seen in the blades of the windmill, see inside left blade and left of the top blade in Figure \ref{fig:result3-e} . \footnote{Please look at these issues in the electronic version or the online demo, as they are not noticeable in the printed version.}
+The second observation is evidenced by the halos seen in the blades of the windmill, see inside left blade and left of the top blade in Figure \ref{fig:result3-e}. \footnote{Please look at these issues in the electronic version or the online demo, as they are not noticeable in the printed version.}
 
 The third claim is evidenced by the structure of the saliency maps of the threshold parameter (Figures \ref{fig:results:parameters:second:saliency:a} and \ref{fig:results:parameters:second:saliency:b}) and the smoothing parameter (Figure \ref{fig:results:parameters:marr:sigma:saliency}). In both maps we observe that meaningful edges are coincident across scales and the spurious ones are not.
 
@@ -1316,9 +1307,9 @@ Comparing the two versions of the Marr-Hildreth algorithm, the version with Gaus
 
 Haralick's algorithm, although it shares the Marr-Hildreth idea of finding zero crossings of the second derivative, has some quite different ideas. It is the only one of these algorithms which works with an approximation of the intensity of the image in the neighborhood of a pixel, using a bicubic polynomial function. This supposes a certain regularity in the image, which is not always true, and sometimes leads to detect edges where none of them exist due to ringing effects, and get some thicker edges too. 
 
-All algorithms have their advantages and disadvantages. Choosing one or the other may depend on requirements of the application. Furthermore, we must remark that we focused on low level edge detectors, and thus none of the implemented methods ensure edge connectivity. This algorithms only serve as the input for a further edge integration step. There are many proposals in the literature aiming to integrate edgels into meaningful object boundaries. Examples of these approaches are the Canny \cite{Canny1986} edge detector or the meanignful level lines algorithm \cite{segm:cao:03:extracting_meaningful}.
+All algorithms have their advantages and disadvantages. Choosing one or the other may depend on requirements of the application. Furthermore, we must remark that we focused on low level edge detectors, and thus none of the implemented methods ensure edge connectivity. This algorithms only serve as the input for a further edge integration step. There are many proposals in the literature aiming to integrate edgels into meaningful object boundaries. Examples of these approaches are the Canny edge detector \cite{Canny1986} or the meanignful level lines algorithm \cite{segm:cao:03:extracting_meaningful}.
 
-With respect to the parameters, these methods require the manual determination of the parameters, and it is very hard to find a single threshold value suitable for a broad category of examples. In this sense, \emph{A contrario} methods provide a better approach for setting parameters.
+With respect to the parameters, these methods require the manual determination of the parameters, and it is very hard to find a single threshold value suitable for a broad category of examples. In this sense, \emph{A contrario} methods \cite{segm:cao:03:extracting_meaningful} provide a better approach for setting parameters.
 For this reason, most modern approaches use a multiscale approach, were edges are detected at many different scales and the optimum scale is chosen a posteriori, as proposed in \cite{morphology:watershed:najman:1996:geodesic_saliency} or \cite{im_proc:segmentation:arbelaez:2006:boundary_extraction}.
 This idea can be even extended to pick edges at different scales depending on the region of the image (see \cite{segm:cardelino:2013:a_contrario_selection_of_optimal_partitions} for a similar idea applied to regions).
 
