@@ -129,7 +129,7 @@ In addition, we will focus on low-level edge detection algorithms, which means t
 
 Along with this paper, a detailed and well commented source code is presented, which 
 implements the described algorithms. In section \ref{sec:appendix1} some common mathematical developments are presented. 
-%A commented explanation of the source code can be found in section \ref{sec:appendix2}. This work also provides tools for code documentation 
+%A commented explanation of the source code can be found in section \ref{sec:appendix2e}. This work also provides tools for code documentation 
 %(see section \ref{sec:appendix2}). 
 Results of the implemented algorithms are presented in Section \ref{sec:results}, along with examples 
 to compare their performance. Conclusions are detailed in Section \ref{sec:conclusions}.
@@ -526,12 +526,13 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 \begin{algorithmic}[1]
 \REQUIRE $im$ input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
 \IF{Gaussian kernel}
-	\STATE Define Laplacian operator $laplacian$
-	\STATE $im_{LAPL} \leftarrow$ convolution($im$,$laplacian$)
-\ELSE
-	\STATE $kernel \leftarrow$ generate\_kernel($n$,$\sigma$) \COMMENT{Generated Gaussian or LoG kernel}.
+	\STATE $kernel \leftarrow$ generate\_gaussian\_kernel($n$,$\sigma$)
 	\STATE $im_{SMOOTHED} \leftarrow$ convolution($im$,$kernel$)
-	\STATE $im_{LAPL} \leftarrow im_{SMOOTHED}$
+	\STATE Define Laplacian operator $laplacian$
+	\STATE $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$laplacian$)
+\ELSE
+\STATE $log_kernel \leftarrow$ generate\_log\_kernel($n$,$\sigma$)
+\STATE $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$log_kernel$)
 \ENDIF
 \STATE $max_L \leftarrow 0$
 \FORALL{pixel $i$ in image $im_{LAPL}$}
