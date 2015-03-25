@@ -1,4 +1,4 @@
-%-------------------------------------------------------------------------------
+% %-------------------------------------------------------------------------------
 % A Review of Classic Edge Detectors - v3.3
 % by Haldo Spontón & Juan Cardelino
 % IPOL 2015
@@ -13,7 +13,6 @@
 \ipolAuthorMark{2} Inst. Ing. Eléctrica, Universidad de la República, Uruguay (\texttt{juanc@fing.edu.uy})}
 
 \usepackage{hyperref,verbatim,graphicx,amsmath,amssymb,amssymb,dsfont}
-\usepackage[ruled,linesnumbered]{algorithm2e}
 \usepackage{sidecap}
 \usepackage[hang,center]{subfigure}
 \usepackage[table]{xcolor}
@@ -23,7 +22,9 @@
 \usepackage{calc}
 \usepackage{array}
 %\usepackage{algorithm}
-\usepackage{algorithmic}
+%\usepackage[ruled,linesnumbered]{algorithm2e}
+%\usepackage{algorithmic,algorithmicx,algpseudocode}
+\usepackage{algorithm,algorithmicx,algpseudocode}
 \newtheorem{theorem}{Theorem}
 \numberwithin{equation}{section}
 \numberwithin{table}{section}
@@ -140,7 +141,7 @@ to compare their performance. Conclusions are detailed in Section \ref{sec:concl
 \section{Algorithms based on the first derivative}
 \label{sec:first}
 
-The algorithms based on first derivatives studied in this paper share a common structure, which only differs in the type of filtering used to compute those derivatives. Figure \ref{fig:blockdiagram1} shows a block diagram of that common structure. \\
+The algorithms based on first derivatives studied in this paper share a common structure, and only differ in the type of filtering used to compute those derivatives. Figure \ref{fig:blockdiagram1} shows a block diagram of that common structure. \\
 
 \begin{figure}[h!]
 	\centering
@@ -201,10 +202,9 @@ and
 	f_y = \frac{\partial f(x,y)}{\partial y} \cong f(i,j+1) - f(i,j).
 \end{equation}
 
-Equations \ref{eq:roberts1} and \ref{eq:roberts2} can be implemented for all values of $x$ and $y$ by filtering the image $f(x,y)$ with the 1-D masks shown in Figure \ref{fig:1dmasks}. However, in order to be able to compute diagonal edges, 2-D masks are needed. \\
-The \textit{Roberts operators} are one of the earliest 
-attempts to use 2-D masks for this purpose. These operators are based on computing the diagonal differences implemented by filtering an image with the masks in Figure \ref{fig:roberts}. By convention 
-in these figures, x-coordinates grow from left to right and y-coordinates grow top-down. It is also 
+Equations \ref{eq:roberts1} and \ref{eq:roberts2} can be implemented for all values of $x$ and $y$ by filtering the image $f(x,y)$ with the 1-D masks shown in Figure \ref{fig:1dmasks}. However, in order to be able to compute diagonal edges, 2-D masks are needed. 
+The \textit{Roberts operators} are one of the earliest attempts to use 2-D masks for this purpose. These operators are based on computing the diagonal differences implemented by filtering an image with the masks in Figure \ref{fig:roberts}. By convention 
+in these figures, x-coordinates grow from left to right and y-coordinates grow from top to down. It is also 
 usual to scale the mask values, in order to have gain equal to $1$. \\
 
 % la primer figura es una forma simple de calcular las derivadas, pero roberst, en [referenfcia]
@@ -241,8 +241,7 @@ usual to scale the mask values, in order to have gain equal to $1$. \\
 	\label{fig:roberts}
 \end{figure}
 
-Figure \ref{fig:1dmasks} shows the simplest way to compute derivatives, but Roberts \cite{im_proc:segmentation:roberts:1963:boundary_extraction} proposes
-to compute them as shown in Figure \ref{fig:roberts}. In order to use the same convolution code for all algorithms, our implementation uses $3\times3$ matrices, adding a row and a column of zeros to the matrices in Figure \ref{fig:roberts}, which produces the same result.
+In order to use the same convolution code for all algorithms, our implementation uses $3\times3$ matrices, adding a row and a column of zeros to the matrices in Figure \ref{fig:roberts}, which produces the same result.
 
 %-------------------------------------------------------------------------------
 
@@ -279,8 +278,8 @@ These masks are called \textit{Prewitt operators} \cite{im_proc:segmentation:pre
 	\label{fig:prewitt}
 \end{figure}
 
-The left mask can be constructed (up to a scale factor) as the convolution of two filters: a vertical derivative 
-$[-1\ 0\ 1]^T$ and an horizontal moving average $[1\ 1\ 1]$. The same reasoning could be applied to the right mask. Hence, these operators can be interpreted as the consecutive application of an horizontal low pass filter with a vertical derivative filter, and viceversa. Thus, they show smoothing properties in the direction orthogonal to the gradient.
+The left hand mask can be constructed (up to a scale factor) as the convolution of two filters: a vertical derivative 
+$[-1\ 0\ 1]^T$ and an horizontal moving average $[1\ 1\ 1]$. The same reasoning could be applied to the right hand mask. Hence, these operators can be interpreted as the consecutive application of an horizontal low pass filter with a vertical derivative filter, and viceversa. Thus, they show smoothing properties in the direction orthogonal to the gradient.
 
 %-------------------------------------------------------------------------------
 
@@ -320,7 +319,7 @@ An example of this behavior is shown in Figure \ref{fig:profiles3d}, where gradi
 
 Then, once the respective operators are applied, an approximation of the gradient (stored in two matrices) 
 is obtained, containing the approximation of the partial derivatives $f_x$ and $f_y$. Gradient magnitude 
-image $M$ is calculated using the equation \ref{eq:mag_alpha} (Figure \ref{fig:profiles3d-c}). 
+image $M$ is calculated using the equation \ref{eq:mag_alpha} (Figure \ref{fig:profiles3d-d}). 
 
 Finally, the edges image is obtained by thresholding the gradient magnitude image, i.e. for a pixel at position $i,j$ in the image the algorithm computes
 \begin{equation*}
@@ -329,7 +328,7 @@ Finally, the edges image is obtained by thresholding the gradient magnitude imag
 					  \end{cases}
 \end{equation*}
 where $\emph{th}$ is the threshold. A black and white image is obtained, in which edge points are indicated in white (see Figure \ref{fig:thresholding}). 
-It is noted that different thresholds lead to different results: thicker or more edges for smaller thresholds, fewer and sparser edges for larger thresholds. This threshold, and the others mentioned below, are defined as a percentage of the maximum value 
+It is noted that different threshold values lead to different results: thicker or more edges for smaller thresholds, fewer and sparser edges for larger thresholds. This threshold, and the others mentioned below, are defined as a percentage of the maximum value 
 of the gradient image. The advantage of this approach is to adapt the threshold to the dynamic range of the image. 
 Therefore, the parameter $threshold$ in the algorithms takes values ​​between $0$ and $1$.
 
@@ -371,25 +370,25 @@ The pseudo-code of the implemented algorithms is shown in Algorithm \ref{algo:fd
 \caption{First derivative edge detection algorithms.}
 \label{algo:fded}
 \begin{algorithmic}[1]
-\REQUIRE $im$ input image, threshold $th$.
-\STATE Define $operator_x$ and $operator_y$ \COMMENT{Roberts, Prewitt or Sobel.}
-\STATE $g_x \leftarrow$ convolution($im$,$operator_x$)
-\STATE $g_y \leftarrow$ convolution($im$,$operator_y$)
-\STATE $max_M \leftarrow 0$
-\FORALL{pixel $i$ in image}
-	\STATE $M[i] \leftarrow \sqrt{g_x^2+g_y^2}$ \COMMENT{Gradient magnitude.}
-	\IF{$M[i]>max_M$}
-		\STATE $max_M \leftarrow M[i]$
-	\ENDIF
-\ENDFOR
-\FORALL{pixel $i$ in image}
-	\IF{$M[i] \geq th \times max_M$}
-		\STATE $im_{OUT}[i] \leftarrow 255$
-	\ELSE
-		\STATE $im_{OUT}[i] \leftarrow 0$
-	\ENDIF
-\ENDFOR
-\RETURN output image $\leftarrow im_{OUT}$
+\Require $im$ input image, threshold $th$.
+\State Define $operator_x$ and $operator_y$ \Comment{Roberts, Prewitt or Sobel.}
+\State $g_x \leftarrow$ convolution($im$,$operator_x$)
+\State $g_y \leftarrow$ convolution($im$,$operator_y$)
+\State $max_M \leftarrow 0$
+\ForAll{pixel $i$ in image}
+	\State $M[i] \leftarrow \sqrt{g_x^2+g_y^2}$ \Comment{Gradient magnitude.}
+	\If{$M[i]>max_M$}
+		\State $max_M \leftarrow M[i]$
+	\EndIf
+\EndFor
+\ForAll{pixel $i$ in image}
+	\If{$M[i] \geq th \times max_M$}
+		\State $edges[i] \leftarrow 1$
+	\Else
+		\State $edges[i] \leftarrow 0$
+	\EndIf
+\EndFor
+\Return $edges$
 \end{algorithmic}
 \end{algorithm}
 
@@ -400,9 +399,8 @@ The pseudo-code of the implemented algorithms is shown in Algorithm \ref{algo:fd
 
 The edge detection methods discussed in the previous section are simply based on filtering the 
 image with different masks, without taking into account the characteristics of the edges or 
-the noise in the image. 
-
-Both algorithms presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:84:digital_step} and Haralick \cite{bb20239}) 
+the noise in the image.
+The algorithms that will presented in this section (Marr-Hildreth \cite{segm:edge_region:marr:84:digital_step} and Haralick \cite{bb20239}) 
 are based on the second derivative of the image, and take steps to reduce noise before 
 detecting edges in the image.
 
@@ -425,9 +423,8 @@ recursive Gaussian filters \cite{Deriche1993Recursively}.
 	\label{fig:blockdiagram2}
 \end{figure}
 
-The algorithm is divided in two steps, each one described later:
+The algorithm is divided in two steps, which will be described later:
 \begin{enumerate}
-	\item Grayscale conversion of the input image.
 	\item Convolution of the image with:
 	\begin{itemize}
 		\item a Laplacian of Gaussian (LoG) kernel, (or)
@@ -436,7 +433,7 @@ The algorithm is divided in two steps, each one described later:
 	\item Search of zero crossing points in the filtered image.
 \end{enumerate}
 
-IN order to implement this algorithm some auxiliary functions are needed, such as Gaussian kernel and Laplacian of a Gaussian 
+In order to implement this algorithm some auxiliary functions are needed, such as Gaussian kernel and Laplacian of a Gaussian 
 kernel generation, and 2-D convolution of an image with a given kernel, 
 using different boundary conditions. These operations will be discussed 
 in detail in section \ref{sec:appendix1}.
@@ -454,7 +451,7 @@ Because these are linear processes, equation \ref{eq:log} can be written also as
 \begin{equation}
   g(x,y) = \nabla^2[G(x,y)\star f(x,y)]
 \end{equation}
-indicating that the image can be smoothed with a Gaussian filter first, and then compute the Laplacian of the result\footnote{The difference between these approaches lies in the compromise between the accuracy in the calculation and the computational cost (see Section \ref{kernelcomparison}).} .
+indicating that the image can be smoothed with a Gaussian filter first, and then compute the Laplacian of the result\footnote{The difference between these approaches lies in the compromise between the accuracy in the calculation and the computational cost (see Section \ref{kernelcomparison}).}.
 
 Then, the algorithm requires the generation of both Gaussian and LoG kernels (see section \ref{sec:appendix1}).\\
 
@@ -462,13 +459,14 @@ The Marr-Hildreth edge-detection algorithm may be summarized as follows:
 \begin{enumerate}
 	\item Filter the input image with a $n \times n$ Gaussian lowpass filter obtained by sampling the Gaussian kernel (see equation \ref{eq:gaussian_function}). % reescribir (sampleo de un kernel gaussiano)
 	\item Compute the Laplacian of the image resulting from step 1, using, for example, the $3\times3$ mask\footnote{Steps 1 and 2 can be merged into one, using a $n\times n$ LoG lowpass filter obtained by sampling equation \ref{eq:log_function}.}:
-	\begin{equation*}
+	\begin{equation}
 		\begin{bmatrix}
 			1 &  1 & 1 \\
 			1 & -8 & 1 \\
 			1 &  1 & 1 \\
 		\end{bmatrix}
-	\end{equation*}
+		\label{eq:laplacian:mask}
+	\end{equation}
 	\item Find the zero crossings of the image from step 2.
 \end{enumerate}
 
@@ -486,8 +484,8 @@ two conditions must hold: first, the signs of the opposite pixels must differ, a
 difference in absolute value must be greater than a certain threshold. 
 
 The zero-crossing threshold ($th_{ZC}$) is given as a percentage of the maximum value $max_L$ of the Laplacian 
-image (both Gaussian and LoG kernels). Each pixel $p$ has eight neighbors, named according to their position 
-as follows.
+image for both Gaussian and LoG kernels. Each pixel $p$ has eight neighbors, named according to their position 
+as follows:
 
 \begin{center}
 \begin{tabular}{ c c c c c }
@@ -523,32 +521,32 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 \caption{Marr-Hildreth edge detection algorithm.}
 \label{algo:mh}
 \begin{algorithmic}[1]
-\REQUIRE $im$ input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
-\IF{Gaussian kernel}
-	\STATE $kernel \leftarrow$ generate\_gaussian\_kernel($n$,$\sigma$)
-	\STATE $im_{SMOOTHED} \leftarrow$ convolution($im$,$kernel$)
-	\STATE Define Laplacian operator $laplacian$
-	\STATE $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$laplacian$)
-\ELSE
-\STATE $log\_kernel \leftarrow$ generate\_log\_kernel($n$,$\sigma$)
-\STATE $im_{LAPL} \leftarrow$ convolution($im$,$log\_kernel$)
-\ENDIF
-\STATE $max_L \leftarrow 0$
-\FORALL{pixel $i$ in image $im_{LAPL}$}
-	\IF{$im_{LAPL}[i]>max_L$}
-		\STATE $max_L \leftarrow im_{LAPL}[i]$
-	\ENDIF
-\ENDFOR
-\FORALL{pixel $i$ in image $im_{LAPL}$, except borders}
-	\FORALL{pair $(p_1,p_2)$ of opposite neighbors of $p$ in $im_{LAPL}$}
-		\IF{($\mbox{sign}(im_{LAPL}[p_1])\neq\mbox{sign}(im_{LAPL}[p_2])$) \AND ($|im_{LAPL}[p_1]-im_{LAPL}[p_2]|>th_{ZC}$)}
-			\STATE $im_{OUT}[i] \leftarrow 255$
-		\ELSE
-			\STATE $im_{OUT}[i] \leftarrow 0$
-		\ENDIF
-	\ENDFOR
-\ENDFOR
-\RETURN output image $\leftarrow im_{OUT}$
+\Require $im$ input image, standard deviation $\sigma$, kernel size $n$ and zero-crossing threshold $t_{ZC}$.
+\If{Gaussian kernel}
+	\State $kernel \leftarrow$ generate\_gaussian\_kernel($n$,$\sigma$)
+	\State $im_{SMOOTHED} \leftarrow$ convolution($im$,$kernel$)
+	\State Define Laplacian operator $laplacian$ \Comment{See mask definition in Eq. \ref{eq:laplacian:mask}}
+	\State $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$laplacian$)
+\Else
+\State $log\_kernel \leftarrow$ generate\_log\_kernel($n$,$\sigma$)
+\State $im_{LAPL} \leftarrow$ convolution($im$,$log\_kernel$)
+\EndIf
+\State $max_L \leftarrow 0$
+\ForAll{pixel $i$ in image $im_{LAPL}$}
+	\If{$im_{LAPL}[i]>max_L$}
+		\State $max_L \leftarrow im_{LAPL}[i]$
+	\EndIf
+\EndFor
+\ForAll{pixel $i$ in image $im_{LAPL}$, except borders}
+	\ForAll{pair $(p_1,p_2)$ of opposite neighbors of $p$ in $im_{LAPL}$}
+		\If{($\mbox{sign}(im_{LAPL}[p_1])\neq\mbox{sign}(im_{LAPL}[p_2])$) \bf{and} ($|im_{LAPL}[p_1]-im_{LAPL}[p_2]|>th_{ZC}$)}
+			\State $edges[i] \leftarrow 1$
+		\Else
+			\State $edges[i] \leftarrow 0$
+		\EndIf
+	\EndFor
+\EndFor
+\Return $edges$
 \end{algorithmic}
 \end{algorithm}
 
@@ -573,11 +571,11 @@ its parameters.%\footnote{This implementation is slightly different from the tra
 
 Here, we present the interpolation method used in the original work of Haralick, although there are other options to do this \cite{getreuer}. 
 
-The surrounding neighborhood of a point $(x_0,y_0)$ in the image $f$ is approximated using the following bi-cubic polynomial
+The surrounding neighborhood of a point $(x_0,y_0)$ in the image $I$ is approximated using the following bi-cubic polynomial $f$ as
 \begin{align}
 	\label{eq:bicubic:long}
-	f(x,y) = k_1 + k_2 (x-x_0) + k_3(y-y_0) + k_4(x-x_0)^2 + k_5(x-x_0)(y-y_0)  +\\
-	 k_6(y-y_0) ^2 + k_7(x-x_0)^3 + k_8(x-x_0)^2(y-y_0)  + k_9(x-x_0)(y-y_0) ^2 + k_{10}(y-y_0) ^3 \\
+	f(x,y) = k_1 + k_2 (x-x_0) + k_3(y-y_0) + k_4(x-x_0)^2 + k_5(x-x_0)(y-y_0)  + \nonumber\\
+	 k_6(y-y_0) ^2 + k_7(x-x_0)^3 + k_8(x-x_0)^2(y-y_0)  + k_9(x-x_0)(y-y_0) ^2 + k_{10}(y-y_0) ^3.
 \end{align}
 To solve this fitting problem, it is necessary to take more neighbors than coefficients to be adjusted. As there are 10 coefficients to compute, the smallest neighborhood of odd size that accomplishes this has size $5\times5$. Having $10$ coefficients and $25$ data 
 points leads to an overdetermined system, which can be solved using least squares or any other suitable fitting technique.\\
@@ -592,7 +590,7 @@ In Haralick's work, this polynomial approximation is expressed in a local coordi
 
 Then the solution is computed using least squares, and the local expression of the polynomial ensures that the values of the $k_i$ coefficients are computed in the same way for every pixel in the image. Thus, they can be computed by convolving the image with a set of fixed and precomputed masks, which results in a great speed-up of the algorithm. In the following we will state the approximation problem and show how to derive those masks from its solution.\\
 
-Consider 25 points in a small neighborhood the point $(0,0)$. This gives us an equal number of equations to find 10 coefficients. As mentioned before this leads to an overdetermined system which can be solved by least squares. 
+Consider 25 points in a small neighborhood the point $(0,0)$. This gives us an equal number of equations to find 10 coefficients. As mentioned before, this leads to an overdetermined system which can be solved by least squares. 
 By substituting the 25 data points into the polynomial equation (\ref{eq:bicubic}), the following system of 
 equations is obtained,
 
@@ -604,9 +602,9 @@ equations is obtained,
 		f_{25} = f(x_{25},y_{25}) = k_1 + k_2x_{25} + k_3y_{25} + k_4x_{25}^2 + k_5x_{25}y_{25} + k_6y_{25}^2 + k_7x_{25}^3 + k_8x_{25}^2y_{25} + k_9x_{25}y_{25}^2 + k_{10}y_{25}^3 . \\
 	\end{array}
 \end{equation*}
-
+%
 Using matrix notation, the system can be rewritten as
-
+%
 \begin{equation*}
 	\begin{bmatrix} 
 		f_1		\\ 
@@ -630,17 +628,17 @@ Using matrix notation, the system can be rewritten as
 	\end{bmatrix}
 	\Rightarrow \mathbf{f} = \mathbf{A}\mathbf{k} .\\
 \end{equation*}
-
+%
 Then, the least squares problem can be solved by using the normal equations,
-
+%
 \begin{equation*}
-	(\mathbf{A}^T\mathbf{A})^{-1}\mathbf{A}^T\mathbf{f} = \mathbf{k} 
+	(\mathbf{A}^T\mathbf{A})^{-1}\mathbf{A}^T\mathbf{f} = \mathbf{k}.
 \end{equation*}
-
+%
 Let us define a matrix $\mathbf{B} \in R^{10\times25}$ such that $\mathbf{B}=(\mathbf{A}^T\mathbf{A})^{-1}\mathbf{A}^T$, thus
-
+%
 $$ \mathbf{k} = \mathbf{B}\mathbf{f} $$
-
+%
 \begin{equation*}
 	\begin{bmatrix}
 		b_{1,1}		& b_{1,2}	& \hdots	& b_{1,25}	\\
@@ -668,17 +666,17 @@ For each coefficient ($i$ from $1$ to $10$),
 
 \begin{equation}
 	\label{eq:coefficients}
-	k_i = b_{i,1}f_1 + b_{i,2}f_2 + b_{i,3}f_3 + \hdots + b_{i,25}f_{25} \ \ \Rightarrow \ \ \mathbf{k_i} = \mathbf{b_i}\mathbf{f} ,\\
+	k_i = b_{i,1}f_1 + b_{i,2}f_2 + b_{i,3}f_3 + \hdots + b_{i,25}f_{25} \ \ \Rightarrow \ \ k_i = \mathbf{b_i}\mathbf{f} ,\\
 \end{equation}
-
+%
 where $\mathbf{b_i}$ is the vector containing the $i-th$ row of $B$, i.e.
-
+%
 \begin{equation}
 	\label{eq:b_i_v}
-	\mathbf{b_i} = \begin{bmatrix}	b_{i,1}		& b_{i,2}	& \hdots	& b_{i,25}
+	\mathbf{b_i} = \begin{bmatrix}	b_{i,1}		& b_{i,2}	& \cdots	& b_{i,25}
 					\end{bmatrix}.\\
 \end{equation}
-
+%
 Let us rearrange $\mathbf{b_i}$ as a $5\times5$ matrix and denote it by $\mathbf{mask_i}$ as follows
 \begin{equation}
 	\label{eq:b_i}
@@ -693,7 +691,7 @@ Let us rearrange $\mathbf{b_i}$ as a $5\times5$ matrix and denote it by $\mathbf
 We will compute one value of $k_i$ for each pixel on the image. Thus we can store these coefficients in a matrix $\bf{K_i}$ of the same size as the original image. Then, using the mask shown in Equation \ref{eq:b_i} we can obtain $\bf{K_i}$ as the convolution of the original image with $\mathbf{mask_i}$. \\
 \begin{equation}
 	\label{eq:convolution_b}
-	\mathbf{K_i} = f \star \mathbf{mask_i} \: \mathtt{for} \: i \in \{1 \ldots 10\}\\
+	\mathbf{K_i} = f \star \mathbf{mask_i}.\\
 \end{equation}
 
 As we expressed the approximation in a local coordinate system, the coefficients $b_{i,j}$ will be the same for every pixel, thus, this convolution is performed against a fixed and precomputed mask $\mathbf{mask_i}$. The numeric values of these 5x5 masks used in our experiments are shown in Table \ref{table:b_i}.
@@ -705,29 +703,29 @@ As we expressed the approximation in a local coordinate system, the coefficients
 \subsubsection{Analytical calculation of the second derivative}
 \label{sec:secderivative}
 
-The main idea of Haralick's algorithm, as stated in the original work, is to find "negative sloped zero crossings of the second derivative". This means that it is actually looking for ascending step edges. According to Haralick's definition, a pixel will lie on such an edge if the following three conditions hold\footnote{Please note that there is a typo in Haralick's original paper. The statement of the idea is presented at the beggining of Section III, in the first column of page 42. The three conditions are presented at the end of the same section, in the second column. There it reads $f''_{\alpha}(\rho)<0$, $f''_{\alpha}(\rho)=0$ and $f'_{\alpha}(\rho)\neq 0$. Clearly, the first and second conditions can't be true at the same time, thus the first one should be $f'''_{\alpha}(\rho)<0$.}:
+The main idea of Haralick's algorithm, as stated in the original work, is to find ``negative sloped zero crossings of the second derivative". This means that it is actually looking for ascending step edges. According to Haralick's definition, a pixel will lie on such an edge if the following three conditions hold\footnote{Please note that there is a typo in Haralick's original paper. The statement of the idea is presented at the begining of Section III, in the first column of page 42. The three conditions are presented at the end of the same section, in the second column. There it reads $f''_{\alpha}(\rho)<0$, $f''_{\alpha}(\rho)=0$ and $f'_{\alpha}(\rho)\neq 0$. Clearly, the first and second conditions can't be true at the same time, thus the first one should be $f'''_{\alpha}(\rho)<0$.}:
 
 \begin{enumerate}
-\item the first derivative is non zero.
-\item the second derivative is zero.
-\item the third derivative is negative.
+\item The first derivative is non zero.
+\item The second derivative is zero.
+\item The third derivative is negative.
 \end{enumerate}
 
 After the neighborhood of each point of the image is approximated using the bi-cubic polynomial expression in equation \ref{eq:bicubic}, the idea is to compute the derivatives of the image in the direction of the gradient using that approximation.\\
 
-Let $\theta$ be the gradient angle, defined clockwise with respect to the y-axis\footnote{Although it seems a non standard choice, we followed exactly from the original work}. We approximate it using the first order terms of the polynomial \ref{eq:bicubic} obtaining the following expression:
+Let $\theta$ be the gradient angle, defined clockwise with respect to the y-axis\footnote{Although it seems a non standard choice, we followed exactly the original work.}. We approximate it using the first order terms of the polynomial \ref{eq:bicubic} obtaining the following expression:
 
 \begin{align}
 \label{eq:sincos}
 	\sin(\theta) & = -\frac{k_2}{\sqrt{k_2^2 + k_3^2}} \nonumber \\
-	\cos(\theta) & = -\frac{k_3}{\sqrt{k_2^2 + k_3^2}}. \\
+	\cos(\theta) & = -\frac{k_3}{\sqrt{k_2^2 + k_3^2}}.
 \end{align}
 
 Let us consider the line $r$ passing by $(0,0)$ with angle $\theta$. The coordinates of each point $(x,y)$ on this line can be described in terms of  the angle $\theta$ and the distance $\rho$ to $(0,0)$ as follows
 
 \begin{align*}
 	x = \rho\sin{\theta} \\
-	y = \rho\cos{\theta} 
+	y = \rho\cos{\theta}.
 \end{align*}
 
 If we substitute the above expressions in the bi-cubic polynomial of Eq. \ref{eq:bicubic}, we obtain
@@ -760,12 +758,12 @@ The simplest way to impose the above-mentioned conditions is starting with the t
 	f'''_{\theta}(\rho) = 6C_3 < 0 \ \ \Rightarrow \ \ C_3 < 0.
 \end{equation}
 
-By construction $\theta$ is the direction of the gradient, which means that the edge will always be an ascending step. Thus by definition the function $f_{\theta}(\rho)$ is non-decreasing in a neighborhood of $\rho=0$, which means that $f'_{\theta}(0) \geq 0$. This in turn implies that $C_1 \geq 0$.
+By construction, $\theta$ is the direction of the gradient, which means that the edge will always be an ascending step. Thus by definition the function $f_{\theta}(\rho)$ is non-decreasing in a neighborhood of $\rho=0$, which means that $f'_{\theta}(0) \geq 0$. This in turn implies that $C_1 \geq 0$.
 
 The second condition that the second derivative is equal to zero becomes
 
 \begin{equation}\label{eq:haralick:cond_b_orig}
-	f''_{\theta}(\rho) = 2C_2 + 6C_3\rho = 0
+	f''_{\theta}(\rho) = 2C_2 + 6C_3\rho = 0.	
 \end{equation}
 
 Ideally, if the edge point falls exactly on a grid location, the polynomial function 
@@ -822,22 +820,22 @@ The pseudo-code of Haralick's algorithm is shown in Algorithm \ref{algo:haralick
 \caption{Haralick edge detection algorithm.}
 \label{algo:haralick}
 \begin{algorithmic}[1]
-\REQUIRE $im$ input image (width $w$, height $h$), edge point condition threshold $\rho_0$.
-\STATE Define the ten $5\times5$ masks ($mask_1\dots mask_{10}$) used to determine coefficients $k_1$ to $k_{10}$ \COMMENT{See Table \ref{table:b_i}.}
-\FORALL{pixel $i$ in image $im$}
-	\STATE $neighbors \leftarrow$ $5\times5$ neighborhood of pixel $i$ in image $im$
-	\FOR{$j=1$ \TO $10$}
-		\STATE $k_j \leftarrow$ convolution($neighbors$,$mask[j]$)
-	\ENDFOR
-	\STATE $C_2 \leftarrow \frac{k_2^2k_4 + k_2k_3k_5 + k_3^2k_6}{k_2^2 + k_3^2}$
-	\STATE $C_3 \leftarrow \frac{k_2^3k_7 + k_2^2k_3k_8 + k_2k_3^2k_9 + k_3^3k_{10}}{(\sqrt{k_2^2 + k_3^2})^3}$
-	\IF{{$|C_2/3C_3|\leq\rho_0$} \AND {$C_3<0$}}
-		\STATE $im_{OUT}[i] \leftarrow 255$
-	\ELSE
-		\STATE $im_{OUT}[i] \leftarrow 0$
-	\ENDIF
-\ENDFOR
-\RETURN output image $\leftarrow im_{OUT}$
+\Require $im$ input image (width $w$, height $h$), edge point condition threshold $\rho_0$.
+\State Define the ten $5\times5$ masks ($mask_1\dots mask_{10}$) used to determine coefficients $k_1$ to $k_{10}$ \Comment{See Table \ref{table:b_i}.}
+\ForAll{pixel $i$ in image $im$}
+	\State $neighbors \leftarrow$ $5\times5$ neighborhood of pixel $i$ in image $im$
+	\For{$j=1$ \bf{to} $10$}
+		\State $k_j \leftarrow$ convolution($neighbors$,$mask[j]$)
+	\EndFor
+	\State $C_2 \leftarrow \frac{k_2^2k_4 + k_2k_3k_5 + k_3^2k_6}{k_2^2 + k_3^2}$
+	\State $C_3 \leftarrow \frac{k_2^3k_7 + k_2^2k_3k_8 + k_2k_3^2k_9 + k_3^3k_{10}}{(\sqrt{k_2^2 + k_3^2})^3}$
+	\If{{$|C_2/3C_3|\leq\rho_0$} \bf{and} {$C_3<0$}}
+		\State $edges[i] \leftarrow 1$
+	\Else
+		\State $edges[i] \leftarrow 0$
+	\EndIf
+\EndFor
+\Return $edges$
 \end{algorithmic}
 \end{algorithm}
 

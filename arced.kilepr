@@ -35,16 +35,16 @@ order=-1
 
 [item:edge-detection-review-3rd-revision-v3.tex]
 archive=true
-column=51
+column=42
 encoding=UTF-8
 highlight=LaTeX
-line=121
+line=765
 mode=LaTeX
 open=true
 order=0
 
 [view-settings,view=0,item:edge-detection-review-3rd-revision-v3.tex]
-CursorColumn=51
-CursorLine=121
+CursorColumn=42
+CursorLine=765
 JumpList=
-ViMarks=.,121,50,[,121,43,],121,50
+ViMarks=.,765,41,[,765,41,],765,41
