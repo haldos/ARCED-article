@@ -7,10 +7,10 @@
 \documentclass{ipol}
 %\ipolSetID{arced}
 \ipolSetTitle{A Review of Classic Edge Detectors}
-\ipolSetAuthors{Haldo Spont\'on$^1$, Juan Cardelino$^2$}
+\ipolSetAuthors{Haldo Spont\'on\ipolAuthorMark{1}, Juan Cardelino\ipolAuthorMark{2}}
 \ipolSetAffiliations{%
-$^1$ IIE, UdelaR, Uruguay (\texttt{haldos@fing.edu.uy})\\
-$^2$ IIE, UdelaR, Uruguay (\texttt{juanc@fing.edu.uy})}
+\ipolAuthorMark{1} Inst. Ing. Eléctrica, Universidad de la República, Uruguay (\texttt{haldos@fing.edu.uy})\\
+\ipolAuthorMark{2} Inst. Ing. Eléctrica, Universidad de la República, Uruguay (\texttt{juanc@fing.edu.uy})}
 
 \usepackage{hyperref,verbatim,graphicx,amsmath,amssymb,amssymb,dsfont}
 \usepackage[ruled,linesnumbered]{algorithm2e}
@@ -76,7 +76,7 @@ In this paper some of the classic alternatives for edge detection in digital ima
 of edge detection algorithms is to find where abrupt changes in the intensity of an image have occurred. 
 The first family of algorithms reviewed in this work uses the first derivative to find the changes of intensity, 
 such as Sobel, Prewitt and Roberts. In the second reviewed family, second derivatives are used, for example in algorithms 
-like Marr-Hildreth and Haralick. \\
+like Marr-Hildreth and Haralick.
 Obtained results are analyzed from a qualitative point of view (perceptual) and from a quantitative 
 point of view (number of operations, execution time), considering different ways to convolve an image with a kernel (step required in some of the algorithms).
 \end{abstract}
@@ -86,8 +86,7 @@ point of view (number of operations, execution time), considering different ways
 \begin{ipolCode}
 For all the reviewed algorithms, an open source C implementation is provided which can be downloaded from 
 the IPOL publication of this article. An 
-\href{\demourl}{online demonstration}%\footnote{\url{http://dev.ipol.im/~juanc/ipol_demo/sc_edges/}} 
-is also available, where you can test and reproduce our results.
+\href{\demourl}{online demonstration} is also available, where you can test and reproduce our results.
 \end{ipolCode}
 
 % You can also follow this code project in this \href{git://github.com/haldos/edges.git}{GIT repository} 
@@ -120,7 +119,7 @@ as a peak (or valley) in the first derivative or, equivalently, as a zero
 crossing in the second derivative. This algorithm is presented in Section \ref{sec:second}. 
 Haralick's algorithm \cite{bb20239} is an alternative approach based on the second derivative 
 which is also reviewed in Section \ref{sec:second}. This algorithm has the particularity of 
-proposing a model to locally approximate the image around a point; then, using this model, 
+proposing a model to approximate the image locally around a point; then, using this model, 
 an approximation to the second derivative of the image can be calculated analytically and 
 finding edges is achieved by imposing a condition over the model parameters. 
 
@@ -531,8 +530,8 @@ The pseudo-code of Marr-Hildreth's algorithm is shown in Algorithm \ref{algo:mh}
 	\STATE Define Laplacian operator $laplacian$
 	\STATE $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$laplacian$)
 \ELSE
-\STATE $log_kernel \leftarrow$ generate\_log\_kernel($n$,$\sigma$)
-\STATE $im_{LAPL} \leftarrow$ convolution($im_{SMOOTHED}$,$log_kernel$)
+\STATE $log\_kernel \leftarrow$ generate\_log\_kernel($n$,$\sigma$)
+\STATE $im_{LAPL} \leftarrow$ convolution($im$,$log\_kernel$)
 \ENDIF
 \STATE $max_L \leftarrow 0$
 \FORALL{pixel $i$ in image $im_{LAPL}$}
