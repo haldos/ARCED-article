@@ -17,7 +17,7 @@ MakeIndex=
 QuickBuild=
 
 [document-settings,item:edge-detection-review-3rd-revision-v3.tex]
-Bookmarks=
+Bookmarks=994
 Encoding=UTF-8
 Highlighting=LaTeX
 Indentation Mode=normal
@@ -35,16 +35,16 @@ order=-1
 
 [item:edge-detection-review-3rd-revision-v3.tex]
 archive=true
-column=42
+column=59
 encoding=UTF-8
 highlight=LaTeX
-line=765
+line=824
 mode=LaTeX
 open=true
 order=0
 
 [view-settings,view=0,item:edge-detection-review-3rd-revision-v3.tex]
-CursorColumn=42
-CursorLine=765
+CursorColumn=59
+CursorLine=824
 JumpList=
-ViMarks=.,765,41,[,765,41,],765,41
+ViMarks=.,824,55,[,824,55,],824,55,a,994,526
